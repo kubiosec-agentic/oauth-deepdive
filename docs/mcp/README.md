@@ -49,4 +49,4 @@ When this guide says "the spec," it means the **2025-11-25 stable** spec unless 
 
 ---
 
-← [OIDC](../08-oidc.md) · ↑ [README](../../README.md) · → Next: [Architecture and role split](01-architecture.md)
+← [Workload Identity & Agent ID](../09-workload-identity.md) · ↑ [README](../../README.md) · → Next: [Architecture and role split](01-architecture.md)

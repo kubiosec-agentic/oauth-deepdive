@@ -181,4 +181,4 @@ In modern stacks, **OIDC and OAuth are issued by the same authorization server i
 
 ---
 
-← [OAuth 2.1](07-oauth-2.1.md) · ↑ [README](../README.md) · → Next: [MCP authorization — overview](mcp/README.md)
+← [OAuth 2.1](07-oauth-2.1.md) · ↑ [README](../README.md) · → Next: [Workload Identity Federation and Agent Identities](09-workload-identity.md)

@@ -47,6 +47,6 @@ Chronological by relevance.
 
 ---
 
-← [Security](10-security.md) · ↑ [README](../README.md)
+← [Security](11-security.md) · ↑ [README](../README.md)
 
 *If you'd like a follow-up: a working MCP authorization implementation walkthrough (server-side code in your language of choice, full discovery + token-validation flow), a security review of an existing OAuth deployment, or a deeper dive on agent-specific patterns like Token Exchange fan-out — just ask.*

@@ -13,8 +13,9 @@ flowchart LR
     A[Foundations] --> B[Flows] --> C[Tokens]
     C --> D[OAuth 2.1]
     D --> E[OIDC]
-    E --> F[MCP Authorization]
-    F --> G[Security & Pitfalls]
+    E --> F[Workload + Agent Identity]
+    F --> G[MCP Authorization]
+    G --> H[Security & Pitfalls]
 ```
 
 ## Contents
@@ -49,22 +50,26 @@ flowchart LR
 7. [OAuth 2.1 — what consolidated, what died](docs/07-oauth-2.1.md)
 8. [OpenID Connect (OIDC) — the authentication layer](docs/08-oidc.md)
 
+### Workload and agent identity
+
+9. [Workload Identity Federation and Agent Identities (SPIFFE, Entra Agent ID)](docs/09-workload-identity.md)
+
 ### OAuth 2.1 for MCP — the dedicated section
 
-9. [MCP authorization — overview](docs/mcp/README.md)
-   - 9.1 [Architecture and role split](docs/mcp/01-architecture.md)
-   - 9.2 [The discovery chain (RFC 9728 → RFC 8414)](docs/mcp/02-discovery-chain.md)
-   - 9.3 [Dynamic Client Registration in MCP (RFC 7591)](docs/mcp/03-dynamic-client-registration.md)
-   - 9.4 [Resource indicators — RFC 8707 and audience binding](docs/mcp/04-resource-indicators.md)
-   - 9.5 [The full handshake, end to end](docs/mcp/05-handshake.md)
-   - 9.6 [What an MCP server actually has to implement](docs/mcp/06-server-implementation.md)
-   - 9.7 [Common MCP-auth pitfalls](docs/mcp/07-pitfalls.md)
-   - 9.8 [Beyond bearer — DPoP and Token Exchange for agents](docs/mcp/08-beyond-bearer.md)
+10. [MCP authorization — overview](docs/mcp/README.md)
+    - 10.1 [Architecture and role split](docs/mcp/01-architecture.md)
+    - 10.2 [The discovery chain (RFC 9728 → RFC 8414)](docs/mcp/02-discovery-chain.md)
+    - 10.3 [Dynamic Client Registration in MCP (RFC 7591)](docs/mcp/03-dynamic-client-registration.md)
+    - 10.4 [Resource indicators — RFC 8707 and audience binding](docs/mcp/04-resource-indicators.md)
+    - 10.5 [The full handshake, end to end](docs/mcp/05-handshake.md)
+    - 10.6 [What an MCP server actually has to implement](docs/mcp/06-server-implementation.md)
+    - 10.7 [Common MCP-auth pitfalls](docs/mcp/07-pitfalls.md)
+    - 10.8 [Beyond bearer — DPoP and Token Exchange for agents](docs/mcp/08-beyond-bearer.md)
 
 ### Security and reference
 
-10. [Security considerations and common pitfalls](docs/10-security.md)
-11. [Further reading](docs/11-further-reading.md)
+11. [Security considerations and common pitfalls](docs/11-security.md)
+12. [Further reading](docs/12-further-reading.md)
 
 ---
 

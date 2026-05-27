@@ -94,4 +94,4 @@ None of these alone is sufficient. Together they make a meaningful target.
 
 ---
 
-← [MCP — Beyond bearer](mcp/08-beyond-bearer.md) · ↑ [README](../README.md) · → Next: [Further reading](11-further-reading.md)
+← [MCP — Beyond bearer](mcp/08-beyond-bearer.md) · ↑ [README](../README.md) · → Next: [Further reading](12-further-reading.md)
