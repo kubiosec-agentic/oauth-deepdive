@@ -34,9 +34,19 @@ flowchart LR
 sequenceDiagram
     autonumber
     participant U as User
+    participant C as Client
     participant B as Browser
     participant AS as Authorization Server
 
+    rect rgb(240, 240, 240)
+    Note over U,B: BEFORE — preparation, then launch the browser<br/>(this is NOT the authorization step yet)
+    U->>C: Trigger sign-in (click button,<br/>run CLI command, tap app icon)
+    C->>C: Generate state (CSRF token)<br/>Generate code_verifier + code_challenge (PKCE)
+    C->>B: Open browser at /authorize?...<br/>HOW depends on client type — see below
+    end
+
+    rect rgb(220, 245, 220)
+    Note over U,AS: THE AUTHORIZATION STEP — user-at-AS interaction
     B->>AS: GET /authorize?client_id=...&scope=read:mail&...
     AS->>U: Show login form / SSO / MFA prompt
     U->>AS: Provide credentials
@@ -46,7 +56,19 @@ sequenceDiagram
     Note over AS: 2- CONSENT<br/>"User approves read:mail for client X"
     Note over AS: 3- BINDING<br/>"Code XYZ → user 7b8c → scope read:mail"
     AS->>B: 302 → client's redirect_uri?code=XYZ
+    end
 ```
+
+### How the browser actually gets opened
+
+The greyed-out step *"Open browser at /authorize"* varies by client type — same goal (get the browser to that URL), different mechanism each time:
+
+- **Server-side web app** — the user is already in a browser session with the client. The client's server returns an HTTP `302 Found` with `Location: https://as.example.com/authorize?...`. The browser follows the redirect on its own.
+- **Single-page app (SPA)** — runs in the same browser. The client's JavaScript sets `window.location.href = "https://as.example.com/authorize?..."`. Same browser tab navigates away to the AS.
+- **Native mobile app** — invokes a system browser component: **ASWebAuthenticationSession** on iOS, **Custom Tabs** on Android. The AS page renders in a browser surface the app cannot read from, which is the whole point — the app must never see the user's AS credentials.
+- **Desktop / CLI** — spins up a tiny HTTP server on `http://127.0.0.1:<random-port>/cb` to receive the callback, then opens the user's default browser via `open` (macOS), `xdg-open` (Linux), or `start` (Windows). When the AS redirects to the loopback URL, the local listener captures the code and the CLI proceeds.
+
+In every case the *end state* is the same: the browser is sitting on `/authorize` at the AS, ready for the user to authenticate. Everything in the green block of the diagram is then identical.
 
 Three things happen at the AS during this step, all bundled under the umbrella term *authorization*:
 
