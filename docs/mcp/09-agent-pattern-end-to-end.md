@@ -24,7 +24,7 @@ MCP defines a **host → client → server** topology, not the simpler client �
 flowchart TB
     subgraph User_Side[User-side trust boundary]
         User((User))
-        subgraph Host[Host application — owns OAuth identity, security policy]
+        subgraph Host[Host application - owns OAuth identity, security policy]
             Agent[Agent<br/>LLM + orchestration logic<br/>NOT the OAuth client]
             ClientA[MCP Client A<br/>1:1 with Server A]
             ClientB[MCP Client B<br/>1:1 with Server B]
@@ -89,7 +89,7 @@ sequenceDiagram
     H->>S: GET /.well-known/oauth-protected-resource
     S->>H: { resource, authorization_servers, scopes_supported,<br/>bearer_methods_supported, resource_signing_alg_values_supported }
 
-    Note over H: Pick an authorization_server.<br/>(Spec allows multiple; selection logic is the<br/>client's responsibility per RFC 9728 §7.6)
+    Note over H: Pick an authorization_server.<br/>(Spec allows multiple; selection logic is the<br/>client's responsibility per RFC 9728 Section 7.6)
 
     H->>AS: GET /.well-known/oauth-authorization-server<br/>(or /.well-known/openid-configuration)
 
@@ -165,7 +165,7 @@ flowchart TD
     Cimd -->|yes| CIMD[Use a Client ID Metadata Document<br/>The client_id is an HTTPS URL]
     Cimd -->|no| Dcr{Does the AS advertise<br/>registration_endpoint<br/>RFC 7591 DCR?}
     Dcr -->|yes| DCR[Dynamic Client Registration<br/>POST to registration_endpoint,<br/>get a fresh client_id]
-    Dcr -->|no| Prompt[Prompt user for<br/>client info — last resort]
+    Dcr -->|no| Prompt[Prompt user for<br/>client info - last resort]
 ```
 
 ### Path 1 — Pre-registration
@@ -426,7 +426,7 @@ sequenceDiagram
     Note over Host,Hosting: Setup (one-time): Host publishes its CIMD<br/>at https://example.com/client-metadata.json
 
     U->>Agent: "Read my unread mail"
-    Agent->>Host: invoke tool — needs MCP server S
+    Agent->>Host: invoke tool - needs MCP server S
     Host->>S: POST /mcp (no token)
     S->>Host: 401 + WWW-Authenticate:<br/>Bearer resource_metadata="...",<br/>scope="mail:read"
 
@@ -449,7 +449,7 @@ sequenceDiagram
     Host->>Host: Generate code_verifier + code_challenge<br/>+ state
     Host->>B: Open browser at /authorize?<br/>client_id=<CIMD URL>&<br/>code_challenge=...&state=...&<br/>resource=https://mcp.example.com&<br/>scope=mail:read
     B->>AS: GET /authorize
-    AS->>Hosting: GET CIMD URL — fetch client metadata
+    AS->>Hosting: GET CIMD URL - fetch client metadata
     Hosting->>AS: { client_id matches URL, redirect_uris, ... }
     AS->>AS: Validate redirect_uri in request matches CIMD doc
     AS->>U: Login + MFA + consent screen<br/>("MCP Client wants mail:read")
