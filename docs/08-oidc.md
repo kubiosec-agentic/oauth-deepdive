@@ -29,6 +29,62 @@ OIDC reuses the OAuth flows verbatim. The only protocol-level change at the wire
 - The token response now includes `id_token` alongside `access_token`.
 - A `/userinfo` endpoint, callable with the `access_token`, returns additional claims about the user.
 
+## A small terminology map — OP, AS, IdP
+
+This is the single most common source of confusion when reading OIDC documentation: **the same server has three different names depending on which spec or community is writing**.
+
+```mermaid
+flowchart LR
+    subgraph SameThing["One server. Three names."]
+        direction TB
+        OAuth["OAuth 2.0/2.1 calls it:<br/>Authorization Server (AS)"]
+        OIDC["OIDC calls it:<br/>OpenID Provider (OP)"]
+        Casual["People call it:<br/>Identity Provider (IdP)"]
+    end
+    Examples["Concretely:<br/>Auth0, Okta, Entra ID, Keycloak,<br/>AWS Cognito, Google Identity, ..."]
+    SameThing --> Examples
+```
+
+In an OIDC-capable deployment — which is almost every modern deployment — these are not different servers. They are different *names for the same component*, chosen by different specs at different times:
+
+| Term | Spec / community | Emphasises |
+|---|---|---|
+| **Authorization Server (AS)** | OAuth 2.0, OAuth 2.1 (IETF) | The OAuth side: issues access tokens, handles grants. |
+| **OpenID Provider (OP)** | OpenID Connect (OpenID Foundation) | The OIDC side: also issues `id_token`, has `/userinfo`. |
+| **Identity Provider (IdP)** | Colloquial, predates both. Also a SAML term. | The role: this is where users authenticate. |
+
+When this guide's diagrams label something `OP` or `AS` or write `(AS + Identity)` next to a participant, all three refer to the same box in your architecture. The same server runs `/authorize`, `/token`, and `/userinfo`, signs `id_token`s with its own key, and exposes a JWKS endpoint for clients and resource servers to verify those tokens.
+
+### Other OIDC-vs-OAuth term swaps
+
+While we're here:
+
+| OAuth term | OIDC term | Same thing? |
+|---|---|---|
+| **Client** | **Relying Party (RP)** | Yes. OIDC calls the client an RP because it's "relying on" the OP for identity. |
+| **Resource Owner** | **End-User** | Yes. OIDC just uses the more human-readable term. |
+| **Authorization Server** | **OpenID Provider** | Yes — when the AS also speaks OIDC. |
+| **`/authorize`** | **`/authorize`** | Same endpoint, same role. OIDC just adds `scope=openid` and `nonce` to the request. |
+| **`/token`** | **`/token`** | Same endpoint. With `scope=openid`, the response now also contains an `id_token`. |
+| (no equivalent) | **`/userinfo`** | OIDC-specific. The RS-style endpoint for additional user claims. |
+
+If you read an OIDC spec and then an OAuth spec back-to-back, you'll see the same flow described twice with different terms. The wire bytes are identical.
+
+### When the OP isn't actually the identity authority
+
+A subtle layer worth flagging for completeness: the OP/IdP doesn't necessarily *own* user credentials. In federated setups it can delegate authentication further upstream:
+
+```mermaid
+flowchart LR
+    App[Your app<br/>OIDC Relying Party] -->|trusts as OP| Broker["login.example.com<br/>(OIDC OP from app's perspective)"]
+    Broker -->|delegates auth to| Upstream["Corporate SAML IdP /<br/>upstream OIDC provider /<br/>passkey service / etc."]
+    Upstream -->|user authenticates here| User[Actual user]
+```
+
+From your app's point of view, `login.example.com` is the OpenID Provider — it's the only thing the app talks to. From the *organisation's* point of view, `login.example.com` is a broker; the real identity authority is the SAML IdP upstream. Both views are correct; "OP" is a role relative to a specific client relationship.
+
+In practice this delegation is invisible at the OAuth/OIDC layer — the client just sees a working OP. The complexity lives inside the OP's implementation.
+
 ## The id_token
 
 The id_token is a **JWT signed by the AS**. It is consumed by the client only — never sent to a resource server. Its claims tell the client *which user this session represents*.
@@ -71,8 +127,10 @@ sequenceDiagram
     participant U as User
     participant B as Browser
     participant C as Client (Relying Party)
-    participant OP as OIDC Provider<br/>(AS + Identity)
+    participant OP as OpenID Provider (OP)<br/>= OAuth AS + Identity
     participant UI as /userinfo
+
+    Note over OP: One server playing two roles —<br/>OAuth Authorization Server AND<br/>identity authority. Same box,<br/>two names from two specs.
 
     C->>C: Generate code_verifier + nonce + state
     C->>B: 302 → /authorize?<br/>response_type=code<br/>&scope=openid profile email<br/>&nonce=N<br/>&state=S<br/>&code_challenge=...
