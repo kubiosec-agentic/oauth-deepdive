@@ -18,6 +18,7 @@ flowchart TB
     E --> F[6. Server implementation]
     F --> G[7. Pitfalls]
     G --> H[8. Beyond bearer<br/>DPoP + Token Exchange]
+    H --> I[9. Agent/MCP end-to-end<br/>spec-cited deep dive]
 ```
 
 - 9.1 [Architecture and role split](01-architecture.md) — why the MCP server is *only* a resource server
@@ -28,6 +29,7 @@ flowchart TB
 - 9.6 [What an MCP server actually has to implement](06-server-implementation.md) — checklist
 - 9.7 [Common MCP-auth pitfalls](07-pitfalls.md) — what goes wrong in the wild
 - 9.8 [Beyond bearer — DPoP and Token Exchange for agents](08-beyond-bearer.md) — research-leaning
+- 9.9 [The Agent / MCP pattern — OAuth 2.1 end to end](09-agent-pattern-end-to-end.md) — the comprehensive, spec-cited walkthrough
 
 ## The headline
 

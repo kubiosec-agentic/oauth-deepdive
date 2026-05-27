@@ -1,5 +1,7 @@
 # 9.3 Dynamic Client Registration in MCP (RFC 7591)
 
+> **Update for 2025-11-25 spec.** DCR is no longer the *preferred* registration mechanism. The current MCP spec positions [**Client ID Metadata Documents (CIMD)**](09-agent-pattern-end-to-end.md#9-9-4-client-registration--three-paths-in-priority-order) as the recommended approach; DCR is kept "for backwards compatibility or specific requirements." The full priority order (pre-registration → CIMD → DCR → user-prompt) is covered in detail on the [Agent / MCP end-to-end](09-agent-pattern-end-to-end.md) page. This page still describes DCR accurately — but new MCP implementations should reach for CIMD first.
+
 The catch in any MCP deployment: **MCP clients are unknown to the AS until they try to connect**. There is no human in the loop to provision an OAuth app for "Claude Desktop talking to your GitHub MCP server" before the conversation starts. The user expects to plug in a URL and have it work.
 
 **RFC 7591 — Dynamic Client Registration** solves this.

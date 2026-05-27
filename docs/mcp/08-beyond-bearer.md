@@ -81,4 +81,4 @@ The pattern across all of these: **OAuth 2.1 + supporting RFCs already provide t
 
 ---
 
-← [Pitfalls](07-pitfalls.md) · ↑ [MCP](README.md) · → Next: [Security considerations](../11-security.md)
+← [Pitfalls](07-pitfalls.md) · ↑ [MCP](README.md) · → Next: [The Agent / MCP pattern, end to end](09-agent-pattern-end-to-end.md)

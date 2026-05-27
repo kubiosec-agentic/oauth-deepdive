@@ -65,6 +65,7 @@ flowchart LR
     - 10.6 [What an MCP server actually has to implement](docs/mcp/06-server-implementation.md)
     - 10.7 [Common MCP-auth pitfalls](docs/mcp/07-pitfalls.md)
     - 10.8 [Beyond bearer — DPoP and Token Exchange for agents](docs/mcp/08-beyond-bearer.md)
+    - 10.9 [**The Agent / MCP pattern — OAuth 2.1 end to end**](docs/mcp/09-agent-pattern-end-to-end.md) (spec-cited deep dive)
 
 ### Security and reference
 
