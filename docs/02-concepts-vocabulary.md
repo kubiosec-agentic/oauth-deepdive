@@ -15,7 +15,7 @@
 
 ## A small nuance that trips people up
 
-**The client is the application, not the user.** `client_id` identifies the *application*, not whoever is using it. The resource owner is identified through the authorization step — typically appearing as the `sub` claim on the resulting access token.
+**The client is the application, not the user.** `client_id` identifies the *application*, not whoever is using it. The resource owner is identified during *the authorization step* (explained below), and ends up named in the `sub` claim on the resulting access token.
 
 ```mermaid
 flowchart LR
@@ -25,6 +25,53 @@ flowchart LR
         B[sub<br/>identifies the human user]
     end
 ```
+
+## The authorization step — where the user comes in
+
+"The authorization step" is the part of the flow where the user interacts directly with the Authorization Server, at its `/authorize` endpoint. It's where their identity is established and they decide whether to grant access. If you take nothing else from this page, take this: **the AS is the only thing that sees the user's credentials. The client never does.**
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant U as User
+    participant B as Browser
+    participant AS as Authorization Server
+
+    B->>AS: GET /authorize?client_id=...&scope=read:mail&...
+    AS->>U: Show login form / SSO / MFA prompt
+    U->>AS: Provide credentials
+    Note over AS: 1- AUTHENTICATION<br/>"This is user 7b8c-9d4e"
+    AS->>U: Show consent screen:<br/>"Client X wants read:mail. Allow?"
+    U->>AS: Click Approve
+    Note over AS: 2- CONSENT<br/>"User approves read:mail for client X"
+    Note over AS: 3- BINDING<br/>"Code XYZ → user 7b8c → scope read:mail"
+    AS->>B: 302 → client's redirect_uri?code=XYZ
+```
+
+Three things happen at the AS during this step, all bundled under the umbrella term *authorization*:
+
+1. **Authentication** — the user proves who they are: password, MFA, SSO redirect to a corporate IdP, passkey, whatever the AS has configured. The AS now has a session for *this specific human*.
+2. **Consent** — the AS shows the user "Client X is requesting these scopes" and the user clicks Approve (or scopes it down, or denies).
+3. **Binding** — the AS internally records: *this authorization code, when later redeemed at `/token`, should produce an access token whose `sub` claim is this user and whose scopes are these*.
+
+After the redirect back to the client, the client redeems the code at `/token` and the access token it receives carries the user's identity in the `sub` claim. **The client never saw the password** — but it now holds a token that proves "the AS confirms the bearer of this token may act for user `7b8c-9d4e`, within these scopes."
+
+### The naming-vs-meaning confusion
+
+The OAuth spec calls this *the authorization endpoint* even though most of what happens there is *authentication* plus consent. The naming is historical and a perennial source of confusion:
+
+- **Authentication** answers *"who is this?"*
+- **Authorization** answers *"what may they do?"*
+- The OAuth `/authorize` endpoint does both — but the term *authorization* in OAuth refers specifically to the delegation step (the user granting the client access), not to authentication.
+
+[OpenID Connect (OIDC)](08-oidc.md) tightens this by adding `auth_time`, `acr` (Authentication Context Class Reference), and `amr` (Authentication Methods References) claims to the id_token. Those claims describe *the authentication part* — what method was used, how long ago, what assurance level — separately from the access-granting part.
+
+### When there is no authorization step
+
+In flows without a human user — [Client Credentials](flows/client-credentials.md), [JWT Bearer](flows/jwt-bearer.md) — there is no `/authorize` endpoint interaction. The "authorization" is just the AS checking the client's own credentials against policy. Those tokens have no `sub` claim, or have `sub == client_id`. This is exactly why those flows cannot stand in for a user: there was no user to authenticate, so the token can't speak for one.
+
+[Device Grant](flows/device-grant.md) splits the authorization step across two devices: the user authenticates at `verification_uri` on their phone while the constrained device polls `/token`. Same logical step, physically separated.
+
 
 ## Public vs confidential clients — why it matters
 
