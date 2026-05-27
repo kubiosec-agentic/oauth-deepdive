@@ -89,16 +89,18 @@ sequenceDiagram
     H->>S: GET /.well-known/oauth-protected-resource
     S->>H: { resource, authorization_servers, scopes_supported,<br/>bearer_methods_supported, resource_signing_alg_values_supported }
 
-    Note over H: Pick an authorization_server.<br/>Spec allows multiple; the client decides which one<br/>per RFC 9728 Section 7.6
+    Note over H: Client picks one authorization_server when multiple are advertised
 
     H->>AS: GET /.well-known/oauth-authorization-server<br/>(or /.well-known/openid-configuration)
 
-    Note over H,AS: Spec mandates trying both URLs in priority order<br/>for issuer URLs with or without path components.
+    Note over H,AS: Try both well-known URLs in priority order
 
     AS->>H: { issuer, authorization_endpoint, token_endpoint,<br/>registration_endpoint, jwks_uri,<br/>code_challenge_methods_supported,<br/>client_id_metadata_document_supported, ... }
 
-    Note over H: VERIFY: code_challenge_methods_supported is present.<br/>If absent, MUST refuse to proceed.
+    Note over H: Verify code_challenge_methods_supported. If absent the client MUST refuse to proceed
 ```
+
+> **Note on the diagram above:** the client's decision when multiple `authorization_servers` are listed in the PRM document is governed by [RFC 9728 Section 7.6 — Authorization Servers](https://datatracker.ietf.org/doc/html/rfc9728#name-authorization-servers). The MCP spec defers selection logic to the client per that section.
 
 Two new wire-level details that the 2025-11-25 spec tightened:
 
@@ -187,7 +189,7 @@ sequenceDiagram
     participant Hosting as Host's web infra<br/>(example.com)
     participant AS as Authorization Server
 
-    Note over H,Hosting: Set up once: host publishes metadata at<br/>https://example.com/client-metadata.json
+    Note over H,Hosting: Set up once. Host publishes metadata JSON at an HTTPS URL
 
     H->>AS: GET /authorize?client_id=<br/>https://example.com/client-metadata.json&...
     AS->>Hosting: GET https://example.com/client-metadata.json
@@ -384,7 +386,7 @@ sequenceDiagram
         S->>H: 403 + WWW-Authenticate: Bearer error="insufficient_scope",<br/>scope="files:write", resource_metadata="..."
     else valid
         opt server needs upstream API
-            Note over S: Token passthrough FORBIDDEN.<br/>Get our own token from the upstream AS.
+            Note over S: Token passthrough FORBIDDEN. Server gets its own token from the upstream AS
             S->>UpAS: client_credentials or other grant
             UpAS->>S: { upstream_access_token }
             S->>Up: Bearer upstream_access_token
@@ -423,7 +425,7 @@ sequenceDiagram
     participant AS as Authorization Server
     participant Hosting as Client metadata<br/>hosting
 
-    Note over Host,Hosting: Setup runs once. Host publishes its CIMD<br/>at https://example.com/client-metadata.json
+    Note over Host,Hosting: Setup runs once. Host publishes its CIMD JSON document
 
     U->>Agent: "Read my unread mail"
     Agent->>Host: invoke tool - needs MCP server S
@@ -441,7 +443,7 @@ sequenceDiagram
 
     rect rgb(225,240,255)
     Note over Host,AS: --- Registration via CIMD - the preferred path ---
-    Note over Host: No /register call needed.<br/>client_id is the metadata URL.
+    Note over Host: No /register call needed. client_id is the metadata URL itself
     end
 
     rect rgb(225,240,255)
@@ -481,7 +483,7 @@ sequenceDiagram
     Note over Host,AS: --- Later, token expires, refresh ---
     Host->>AS: POST /token grant_type=refresh_token<br/>&refresh_token=...
     AS->>Host: { new access_token, rotated refresh_token }
-    Note over AS: Old refresh token revoked.<br/>If reused then revoke family.
+    Note over AS: Old refresh token revoked. If reused then revoke the whole family
     end
 ```
 
