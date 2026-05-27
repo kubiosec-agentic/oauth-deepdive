@@ -78,6 +78,61 @@ Three things happen at the AS during this step, all bundled under the umbrella t
 
 After the redirect back to the client, the client redeems the code at `/token` and the access token it receives carries the user's identity in the `sub` claim. **The client never saw the password** — but it now holds a token that proves "the AS confirms the bearer of this token may act for user `7b8c-9d4e`, within these scopes."
 
+### Where do those scopes come from?
+
+When the consent screen says *"Client X wants `read:mail`. Allow?"*, a fair question is **who decided `read:mail` exists in the first place?** Not OAuth — the spec is silent on what scope strings mean. The list is defined by the people running the deployment.
+
+```mermaid
+flowchart LR
+    RST["Resource Server team<br/>(designs the API)"] -->|"1- decides which slices<br/>of capability to expose"| Scopes["Scope catalog<br/>read:mail, write:calendar,<br/>tools.invoke, ..."]
+    Scopes -->|2- registered at the AS| AS["Authorization Server"]
+    AS -->|"3- advertises via discovery<br/>(scopes_supported)"| C["Client"]
+    C -->|"4- requests at /authorize<br/>scope=read:mail write:calendar"| AS
+    AS -->|"5- validates known + client allowed,<br/>renders consent screen with<br/>human-readable description"| U["User"]
+    U -->|6- approves or downscopes| AS
+    AS -->|"7- issues token with<br/>granted scope claim"| C
+    C -->|8- API call| RS["Resource Server enforces"]
+```
+
+**Step by step:**
+
+1. **The Resource Server team designs the scopes.** Mail API → `mail.read`, `mail.send`. GitHub → `repo`, `read:org`, `gist`. An MCP server team → `mcp:tools.read`, `mcp:tools.invoke`. The names and grain are chosen by whoever runs the API, based on how they want to slice access.
+2. **The scopes are registered at the Authorization Server.** This is operational, not protocol — done via admin console (Auth0, Okta, Entra), a config file (Keycloak), or as part of the app registration process. The AS now knows: *"these strings are valid; here's what each one means in human language; here's which clients may request them."*
+3. **The AS advertises the catalog through discovery.** The `/.well-known/oauth-authorization-server` document includes a `scopes_supported` array — a client can read this to know what to ask for without hard-coding it.
+4. **The client puts requested scopes in the `/authorize` URL.** Space-separated, like `scope=mail.read mail.send`.
+5. **The AS validates and renders consent.** It rejects unknown scopes, rejects scopes this client isn't allowed to request, and looks up each scope's human-readable description to show on the consent screen. *"Read your mail"* is not in the scope string — it's a label the AS stored alongside `mail.read` for display purposes.
+6. **The user approves (or partially approves).** Some ASes let users tick individual scopes; others are all-or-nothing.
+7. **The token carries the granted scopes.** As a `scope` claim on the access token. Often the same as requested, sometimes less if the user downscoped or AS policy applied.
+8. **The Resource Server enforces.** When a token arrives, the RS checks "is `mail.send` in the token's `scope` claim?" and either honours the call or returns `403 insufficient_scope`. The RS is the ultimate authority on what each scope *actually means* in terms of behaviour — the AS just knows the strings.
+
+**A useful way to think about it:** each scope is a contract negotiated between **one or more resource servers** and **one authorization server**. The AS publishes the list; the RS enforces the semantics. OAuth itself just plumbs the strings through.
+
+#### Naming conventions you'll see in the wild
+
+| Style | Example | Where you see it |
+|---|---|---|
+| **Verb:noun** | `read:mail`, `write:calendar` | Most modern APIs, MCP |
+| **Hierarchical** | `repo`, `repo:status`, `read:packages` | GitHub |
+| **Full URI** | `https://www.googleapis.com/auth/gmail.readonly` | Google APIs, OIDC standard scopes |
+| **Dotted resource** | `Mail.Read`, `Calendars.ReadWrite` | Microsoft Graph / Entra |
+
+None of these is *more correct* — pick a style and stay consistent within your deployment.
+
+#### Standard scopes worth knowing
+
+Defined by OIDC, not OAuth proper, but any AS that does OIDC will recognise them:
+
+- **`openid`** — required. Turns an OAuth flow into an OIDC flow (i.e., return an `id_token`).
+- **`profile`** — `name`, `picture`, `locale`, etc.
+- **`email`** — `email`, `email_verified`.
+- **`offline_access`** — *please give me a refresh token*. Without this, many ASes will issue only an access token.
+
+Custom scopes layer on top normally.
+
+#### MCP scopes
+
+The same machinery, applied to MCP. An MCP server's [Protected Resource Metadata](mcp/02-discovery-chain.md) document publishes its `scopes_supported`. The MCP client reads it during discovery, includes the relevant scopes in the `/authorize` request, and the resulting token carries them. See [§9.2](mcp/02-discovery-chain.md) for the wire-level details.
+
 ### The naming-vs-meaning confusion
 
 The OAuth spec calls this *the authorization endpoint* even though most of what happens there is *authentication* plus consent. The naming is historical and a perennial source of confusion:
