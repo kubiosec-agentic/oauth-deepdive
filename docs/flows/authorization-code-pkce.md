@@ -14,53 +14,107 @@ The mental model: **the client invents a one-time password before starting the f
 
 PKCE was originally designed in 2015 (RFC 7636) for mobile apps, but OAuth 2.1 makes it mandatory for **all** clients using authorization code, public and confidential alike. It's two extra parameters and one extra hash computation — near-zero cost for meaningful defence in depth.
 
-## The attack PKCE prevents
+## The attack PKCE prevents — a concrete walk-through
 
-Without PKCE, the authorization code is just a string travelling through the browser. If anything between the AS and the client sees it, it's usable. Three concrete attack paths:
+To see what PKCE actually defends against, let's follow one real attack scenario step by step. Then we'll re-run the exact same scenario with PKCE turned on and watch where it falls apart.
 
-```mermaid
-flowchart TB
-    subgraph PreAttack[Without PKCE]
-        U1[User] --> B1[Browser]
-        B1 -->|callback URL with code| C1[Real Client]
-        Mal[Malicious app<br/>on same device] -.->|intercepts redirect<br/>via custom URL scheme| C1
-        Net[Network attacker<br/>or shared subdomain] -.->|steals code from<br/>Referer / history / log| C1
-        Net -.->|redeems code directly<br/>at /token| AS1[Authorization Server]
-        AS1 -.->|issues token<br/>to attacker| Net
-    end
-```
+### The scenario
 
-Three real ways the code leaks:
-
-1. **Mobile URL-scheme hijacking.** A malicious app on the same device registers itself as a handler for the legitimate app's custom URL scheme (`myapp://`). When the AS redirects to `myapp://cb?code=...`, the OS routes the redirect to whichever app responds. Pre-PKCE, that handed the attacker a redeemable code.
-2. **Cross-app interception via permissive redirect URIs.** A client registers `https://example.com/cb` but the AS allows wildcard matching, so `https://attacker.example.com/cb` also works. Attacker phishes the user to start the flow with the attacker's redirect URI, and they get the code.
-3. **Browser-history / Referer / log leakage.** The code lives briefly in the URL bar, browser history, server access logs, and `Referer` headers on outbound requests from the callback page. Any of these can leak it to systems that shouldn't have it.
-
-In all three cases, the consequence is the same: an attacker has a fresh authorization code and can exchange it for a real access token by hitting `/token`. The token then lets them act as the user.
-
-## How PKCE blocks it
-
-PKCE adds one secret that **never leaves the legitimate client**. Without that secret, the stolen code is unredeemable.
+Philippe installs a banking app on his phone. He also has, unknowingly, a malicious "battery monitor" utility on the same phone that has registered itself as a handler for the URL scheme `bank://`. (Custom URL schemes on mobile are first-come-first-served on Android, and historically ambiguous on iOS — multiple apps can claim the same scheme.) The banking app uses `bank://callback` as its OAuth redirect URI.
 
 ```mermaid
-flowchart TB
-    subgraph WithPKCE[With PKCE]
-        C2[Real Client] -->|"1- generate code_verifier<br/>(random secret, kept locally)"| C2
-        C2 -->|"2- send code_challenge = SHA256(verifier)<br/>at /authorize"| AS2[Authorization Server]
-        AS2 -->|3- store challenge with the code it issues| AS2
-        AS2 -->|"4- code via redirect"| B2[Browser]
-        B2 -->|callback| C2
-        C2 -->|"5- redeem: send code + ORIGINAL verifier"| AS2
-        AS2 -->|"6- check: SHA256(received_verifier) == stored_challenge ?"| AS2
-        AS2 -->|"yes → token; no → reject"| C2
-        Att[Attacker who stole<br/>just the code] -.->|7- tries to redeem<br/>without the verifier| AS2
-        AS2 -.->|"rejected: no verifier"| Att
-    end
+sequenceDiagram
+    autonumber
+    participant U as Philippe
+    participant BA as Banking App<br/>(legit)
+    participant B as System Browser
+    participant AS as Bank's Authorization Server
+    participant MA as Malicious App<br/>(also installed)
+
+    U->>BA: Tap "Sign in"
+    BA->>B: Open bank://authorize?client_id=bank-app&...
+    B->>AS: GET /authorize
+    AS->>U: Show login page
+    U->>AS: Enter credentials (legitimately)
+    AS->>U: Show consent ("Bank App wants account.read")
+    U->>AS: Approve
+    AS->>B: 302 → bank://callback?code=XYZ
+    Note over B,MA: OS resolves bank:// → multiple handlers exist.<br/>The malicious app responds first and wins.
+    B->>MA: bank://callback?code=XYZ
+    MA->>AS: POST /token<br/>grant_type=authorization_code<br/>&code=XYZ&client_id=bank-app
+    AS->>MA: 200 { access_token, refresh_token }
+    Note over MA: Attacker now holds the user's banking tokens.<br/>Banking app, meanwhile, sees nothing happen.
 ```
 
-The attacker can intercept the code as before. But to exchange it for a token at `/token`, they would also need the **`code_verifier`** — the original random secret that the legitimate client generated and kept in its own memory. The verifier never travelled through the browser, never appeared in a URL, never hit a log. The attacker has no way to know it.
+**What just happened, step by step:**
 
-PKCE binds the code to the client that started the flow.
+- Steps 1–7 are the *normal* authorization flow. Philippe really did sign in at his real bank. He really did approve the real banking app. Everything looks fine from his perspective.
+- Step 8 is where it goes wrong. The AS sends a 302 redirect to `bank://callback?code=XYZ`. The OS sees a URL with the `bank://` scheme and has to pick an app to deliver it to. The malicious app is registered for that scheme too. Whichever app wins the OS lottery gets the redirect.
+- Step 9 — the OS hands the URL to the malicious app instead of the banking app.
+- Steps 10–11 — the malicious app does what *any* OAuth client does at this point: POST to `/token` with the code. The AS has no way to tell whether the caller is the real banking app or not — `client_id` is a public identifier, and there's no client secret in a mobile app (or if there is, it's extractable from the binary, so it's no secret either).
+- The malicious app walks away with `access_token` + `refresh_token`. **The banking app never received the code at all** — Philippe might just see "sign-in failed, try again" with no idea anything was stolen.
+
+This is the canonical attack PKCE was invented to stop. It was real enough that Apple and Google have since tightened URL-scheme handling, but it's still the cleanest illustration of why "the code in the redirect is enough" is a broken model for any client that can't keep a secret.
+
+## How PKCE blocks the same attack
+
+Now run the *exact same scenario* with PKCE turned on. The user, attacker, OS, and AS all behave identically. The only difference is that the banking app generates a per-flow secret before starting, sends only its hash to the AS, and holds the original in its own memory.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant U as Philippe
+    participant BA as Banking App<br/>(legit)
+    participant B as System Browser
+    participant AS as Bank's Authorization Server
+    participant MA as Malicious App
+
+    Note over BA: Generate code_verifier V<br/>(random 64-char string, kept in app memory)<br/>code_challenge = SHA256(V)
+    U->>BA: Tap "Sign in"
+    BA->>B: Open bank://authorize?<br/>code_challenge=SHA256(V)<br/>code_challenge_method=S256
+    B->>AS: GET /authorize
+    Note over AS: Issue code XYZ.<br/>Remember: code XYZ is bound to challenge SHA256(V).
+    AS->>U: Login + consent
+    U->>AS: Approve
+    AS->>B: 302 → bank://callback?code=XYZ
+    Note over B,MA: Same as before — malicious app<br/>wins the URL-scheme race.
+    B->>MA: bank://callback?code=XYZ
+    Note over MA: Attacker has the code, but NOT V.<br/>V was generated inside the banking app<br/>and never travelled anywhere over the wire.<br/>The challenge SHA256(V) is visible<br/>(it was in the /authorize URL), but you<br/>cannot reverse SHA-256 to recover V.
+    MA->>AS: POST /token<br/>code=XYZ<br/>code_verifier=??? (attacker has to guess)
+    AS->>AS: Compute SHA256(received verifier).<br/>Compare to stored challenge SHA256(V).<br/>They don't match.
+    AS->>MA: 400 invalid_grant
+    Note over MA: Attack fails. No token issued.
+```
+
+**What changed:**
+
+- Steps 1–9 are identical. The attacker still wins the URL-scheme race and still has the code.
+- Step 10 is where the world diverges. The malicious app POSTs to `/token` — same as before — but the AS now expects a `code_verifier` parameter. The attacker doesn't have V. The challenge value `SHA256(V)` was in the original `/authorize` URL (so the attacker could *see* it if they were watching), but a cryptographic hash is one-way: you cannot run it backwards to recover the input.
+- Step 11 — the AS hashes whatever the attacker sent, compares it to the challenge it stored at step 4, and finds they don't match.
+- The AS rejects with `400 invalid_grant`. No token issued.
+
+The legitimate banking app, by contrast, *does* have V (it generated it). When the banking app sees the redirect didn't come back to it (because the malicious app won), it simply never tries to redeem — there's no flow to complete. But if you imagine a scenario where the banking app *did* receive the code, it would send the verifier and the AS would accept. **The verifier is the proof that you're the same entity that started the flow.**
+
+## Why the attacker can't just forge the verifier
+
+A reader new to PKCE often asks: *"What stops the attacker from sending any random string as `code_verifier`?"*
+
+Two things, working together:
+
+1. **The challenge is committed to the AS up front.** When the legitimate client started the flow at `/authorize`, it sent `code_challenge = SHA256(V)`. The AS stored that challenge and bound it to the authorization code it later issues. So at `/token` time, the AS already knows the *exact* hash that needs to come out.
+2. **SHA-256 is a one-way function.** Given the challenge `SHA256(V)`, there is no efficient way to find any input `V'` such that `SHA256(V') == SHA256(V)`. The only way to produce a verifier that matches is to know V — which only the legitimate client does, because V was generated locally and never transmitted.
+
+So the attacker is stuck. They can guess random strings, but each guess has a vanishingly small probability of hashing to the right value. They can replay the challenge they saw in the URL, but the AS hashes whatever the client sends — sending the hash doesn't help, because `SHA256(SHA256(V)) ≠ SHA256(V)`.
+
+## Other variants of the same family
+
+The mobile URL-scheme hijack is the most vivid example, but the same defence works against several related attacks:
+
+- **Permissive redirect-URI matching.** Some ASes historically allowed wildcard or prefix matches on `redirect_uri`. An attacker phishes the user into starting the flow with `https://evil.example.com/cb`, intercepts the code at their server, and redeems. PKCE breaks this the same way — no verifier means no token.
+- **Referer / log / browser-history leakage.** The authorization code lives briefly in the URL bar. If the callback page makes a third-party request, the `Referer` header may carry the code. Web-server access logs capture full URLs. Browser history retains them. Anything that exfiltrates the URL gets the code — but PKCE makes that code unredeemable.
+- **Authorization code injection.** A more subtle attack: attacker tricks a *legitimate client* into completing the flow with an authorization code that was actually issued for the attacker's session. Without PKCE, the legitimate client would happily redeem it and end up with the attacker's account. With PKCE, the legitimate client sends *its* verifier, the AS has stored the *attacker's* challenge, the hashes don't match, and the swap fails.
+
+All of these reduce to the same principle: **PKCE binds the authorization code to the specific client that started the flow.** Anyone who didn't start the flow can't finish it.
 
 ## The crypto, in plain terms
 
