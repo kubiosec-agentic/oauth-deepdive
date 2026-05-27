@@ -89,7 +89,7 @@ sequenceDiagram
     H->>S: GET /.well-known/oauth-protected-resource
     S->>H: { resource, authorization_servers, scopes_supported,<br/>bearer_methods_supported, resource_signing_alg_values_supported }
 
-    Note over H: Pick an authorization_server.<br/>(Spec allows multiple; selection logic is the<br/>client's responsibility per RFC 9728 Section 7.6)
+    Note over H: Pick an authorization_server.<br/>Spec allows multiple; the client decides which one<br/>per RFC 9728 Section 7.6
 
     H->>AS: GET /.well-known/oauth-authorization-server<br/>(or /.well-known/openid-configuration)
 
@@ -384,7 +384,7 @@ sequenceDiagram
         S->>H: 403 + WWW-Authenticate: Bearer error="insufficient_scope",<br/>scope="files:write", resource_metadata="..."
     else valid
         opt server needs upstream API
-            Note over S: Token passthrough FORBIDDEN.<br/>Get our own token from upstream's AS.
+            Note over S: Token passthrough FORBIDDEN.<br/>Get our own token from the upstream AS.
             S->>UpAS: client_credentials or other grant
             UpAS->>S: { upstream_access_token }
             S->>Up: Bearer upstream_access_token
@@ -423,7 +423,7 @@ sequenceDiagram
     participant AS as Authorization Server
     participant Hosting as Client metadata<br/>hosting
 
-    Note over Host,Hosting: Setup (one-time): Host publishes its CIMD<br/>at https://example.com/client-metadata.json
+    Note over Host,Hosting: Setup runs once. Host publishes its CIMD<br/>at https://example.com/client-metadata.json
 
     U->>Agent: "Read my unread mail"
     Agent->>Host: invoke tool - needs MCP server S
@@ -431,7 +431,7 @@ sequenceDiagram
     S->>Host: 401 + WWW-Authenticate:<br/>Bearer resource_metadata="...",<br/>scope="mail:read"
 
     rect rgb(240,240,240)
-    Note over Host,AS: --- Discovery (RFC 9728 → RFC 8414/OIDC) ---
+    Note over Host,AS: --- Discovery via RFC 9728 then RFC 8414 or OIDC ---
     Host->>S: GET /.well-known/oauth-protected-resource
     S->>Host: { authorization_servers: [AS], scopes_supported, ... }
     Host->>AS: GET /.well-known/oauth-authorization-server
@@ -440,12 +440,12 @@ sequenceDiagram
     end
 
     rect rgb(225,240,255)
-    Note over Host,AS: --- Registration: CIMD (preferred path) ---
+    Note over Host,AS: --- Registration via CIMD - the preferred path ---
     Note over Host: No /register call needed.<br/>client_id is the metadata URL.
     end
 
     rect rgb(225,240,255)
-    Note over U,AS: --- Authorization step (user-at-AS) ---
+    Note over U,AS: --- Authorization step at the AS ---
     Host->>Host: Generate code_verifier + code_challenge<br/>+ state
     Host->>B: Open browser at /authorize?<br/>client_id=<CIMD URL>&<br/>code_challenge=...&state=...&<br/>resource=https://mcp.example.com&<br/>scope=mail:read
     B->>AS: GET /authorize
@@ -478,10 +478,10 @@ sequenceDiagram
     end
 
     rect rgb(255,245,225)
-    Note over Host,AS: --- Later: token expires, refresh ---
+    Note over Host,AS: --- Later, token expires, refresh ---
     Host->>AS: POST /token grant_type=refresh_token<br/>&refresh_token=...
     AS->>Host: { new access_token, rotated refresh_token }
-    Note over AS: Old refresh token revoked.<br/>If reused → revoke family.
+    Note over AS: Old refresh token revoked.<br/>If reused then revoke family.
     end
 ```
 
