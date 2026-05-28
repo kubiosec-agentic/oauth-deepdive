@@ -20,7 +20,7 @@ flowchart LR
     RS -->|5- validates token<br/>returns data| C
 ```
 
-The mental model that pays off: **OAuth hands your client a stamped ticket** that says "this much, for this long, against that API" — and never lets the API holding the ticket see your password.
+The mental model that pays off: **OAuth hands the application a stamped ticket** that says "this much, for this long, against that API." Your password stays with the login service alone — *neither* the application *nor* the API ever sees it.
 
 ## What OAuth is not
 
