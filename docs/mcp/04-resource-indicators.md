@@ -1,4 +1,4 @@
-# 9.4 Resource indicators — RFC 8707 and audience binding
+# 10.4 Resource indicators — RFC 8707 and audience binding
 
 **This is the rule that surprises people:** MCP clients **MUST** include the `resource` parameter (RFC 8707) on both the authorization request and the token request, set to the canonical URI of the MCP server they intend to call.
 

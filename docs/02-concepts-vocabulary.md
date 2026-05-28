@@ -131,7 +131,7 @@ Custom scopes layer on top normally.
 
 #### MCP scopes
 
-The same machinery, applied to MCP. An MCP server's [Protected Resource Metadata](mcp/02-discovery-chain.md) document publishes its `scopes_supported`. The MCP client reads it during discovery, includes the relevant scopes in the `/authorize` request, and the resulting token carries them. See [§9.2](mcp/02-discovery-chain.md) for the wire-level details.
+The same machinery, applied to MCP. An MCP server's [Protected Resource Metadata](mcp/02-discovery-chain.md) document publishes its `scopes_supported`. The MCP client reads it during discovery, includes the relevant scopes in the `/authorize` request, and the resulting token carries them. See [§10.2](mcp/02-discovery-chain.md) for the wire-level details.
 
 ### The naming-vs-meaning confusion
 

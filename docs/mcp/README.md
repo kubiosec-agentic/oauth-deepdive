@@ -1,4 +1,4 @@
-# 9. MCP authorization — overview
+# 10. MCP authorization — overview
 
 The **Model Context Protocol (MCP)** is an open protocol, originally from Anthropic, that defines how AI applications (clients — e.g., Claude Desktop, an IDE plugin, an agent) connect to external tools and data sources (servers — e.g., a GitHub MCP server, a database MCP server).
 
@@ -21,15 +21,15 @@ flowchart TB
     H --> I[9. Agent/MCP end-to-end<br/>spec-cited deep dive]
 ```
 
-- 9.1 [Architecture and role split](01-architecture.md) — why the MCP server is *only* a resource server
-- 9.2 [The discovery chain](02-discovery-chain.md) — how RFC 9728 and RFC 8414 stitch together
-- 9.3 [Dynamic Client Registration in MCP](03-dynamic-client-registration.md) — RFC 7591 in practice
-- 9.4 [Resource indicators — RFC 8707 and audience binding](04-resource-indicators.md) — the confused-deputy story
-- 9.5 [The full handshake, end to end](05-handshake.md) — discovery → register → authorize → call
-- 9.6 [What an MCP server actually has to implement](06-server-implementation.md) — checklist
-- 9.7 [Common MCP-auth pitfalls](07-pitfalls.md) — what goes wrong in the wild
-- 9.8 [Beyond bearer — DPoP and Token Exchange for agents](08-beyond-bearer.md) — research-leaning
-- 9.9 [The Agent / MCP pattern — OAuth 2.1 end to end](09-agent-pattern-end-to-end.md) — the comprehensive, spec-cited walkthrough
+- 10.1 [Architecture and role split](01-architecture.md) — why the MCP server is *only* a resource server
+- 10.2 [The discovery chain](02-discovery-chain.md) — how RFC 9728 and RFC 8414 stitch together
+- 10.3 [Dynamic Client Registration in MCP](03-dynamic-client-registration.md) — RFC 7591 in practice
+- 10.4 [Resource indicators — RFC 8707 and audience binding](04-resource-indicators.md) — the confused-deputy story
+- 10.5 [The full handshake, end to end](05-handshake.md) — discovery → register → authorize → call
+- 10.6 [What an MCP server actually has to implement](06-server-implementation.md) — checklist
+- 10.7 [Common MCP-auth pitfalls](07-pitfalls.md) — what goes wrong in the wild
+- 10.8 [Beyond bearer — DPoP and Token Exchange for agents](08-beyond-bearer.md) — research-leaning
+- 10.9 [The Agent / MCP pattern — OAuth 2.1 end to end](09-agent-pattern-end-to-end.md) — the comprehensive, spec-cited walkthrough
 
 ## The headline
 
@@ -47,7 +47,7 @@ timeline
     2026-07-28 : Release candidate (largest revision since launch)
 ```
 
-When this guide says "the spec," it means the **2025-11-25 stable** spec unless noted otherwise. The 2026-07-28 RC is referenced for forward-looking material in [§9.8](08-beyond-bearer.md).
+When this guide says "the spec," it means the **2025-11-25 stable** spec unless noted otherwise. The 2026-07-28 RC is referenced for forward-looking material in [§10.8](08-beyond-bearer.md).
 
 ---
 

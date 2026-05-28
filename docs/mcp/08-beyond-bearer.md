@@ -1,4 +1,4 @@
-# 9.8 Beyond bearer — DPoP and Token Exchange for agents
+# 10.8 Beyond bearer — DPoP and Token Exchange for agents
 
 Bearer-only tokens are the MCP default in 2026. Two research-leaning patterns are worth tracking because they're appearing in enterprise MCP deployments and are likely candidates for normative inclusion in future spec revisions.
 

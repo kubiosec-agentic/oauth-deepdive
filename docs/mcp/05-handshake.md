@@ -1,4 +1,4 @@
-# 9.5 The full handshake, end to end
+# 10.5 The full handshake, end to end
 
 This is everything from the preceding pages, stitched together into one sequence.
 

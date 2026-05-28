@@ -1,4 +1,4 @@
-# 9.6 What an MCP server actually has to implement
+# 10.6 What an MCP server actually has to implement
 
 The MCP server's auth code is mostly **token validation** — a few hundred lines, not a few thousand. The AS does the heavy lifting (login, MFA, consent, token issuance, DCR).
 

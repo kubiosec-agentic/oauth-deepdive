@@ -22,7 +22,7 @@ timeline
 
 **2007 — OAuth 1.0.** Built at Twitter and Ma.gnolia, formalized as RFC 5849 in 2010. Used HMAC signatures on each request — every API call had to be cryptographically signed by the client. Secure but painful to implement; signature base-string construction was famously brittle.
 
-**2012 — OAuth 2.0 (RFC 6749 + RFC 6750).** A complete rewrite by an IETF working group. The big bet: **TLS is now ubiquitous, so bearer tokens are fine** — drop request signing, send the token in `Authorization: Bearer …`, lean on HTTPS. Defined four canonical flows (Authorization Code, Implicit, Resource Owner Password Credentials, Client Credentials) plus the refresh-token flow. Eran Hammer, who chaired the working group, famously resigned and called the result "the road to hell" — too many extensibility points, too much left to implementers.
+**2012 — OAuth 2.0 (RFC 6749 + RFC 6750).** A complete rewrite by an IETF working group. The big bet: **TLS is now ubiquitous, so bearer tokens are fine** — drop request signing, send the token in `Authorization: Bearer …`, lean on HTTPS. Defined four canonical flows (Authorization Code, Implicit, Resource Owner Password Credentials, Client Credentials) plus the refresh-token flow. Eran Hammer, the specification’s lead author and editor, famously resigned and called the result "the road to hell" — too many extensibility points, too much left to implementers.
 
 **2014 — OpenID Connect 1.0.** The OpenID Foundation finalised OIDC as an identity layer on top of OAuth 2.0. Added `id_token` (a JWT about the user), `/userinfo`, the `openid` scope, and the `/.well-known/openid-configuration` discovery document that everything else mirrored later. See the [OIDC chapter](08-oidc.md).
 

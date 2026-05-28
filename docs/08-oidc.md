@@ -200,7 +200,7 @@ Modern practice: **always use Authorization Code + PKCE**, even when the spec te
 
 ## scope=openid and the standard scopes
 
-OIDC defines four standard scopes that any conformant OP must recognise:
+OIDC defines a set of standard scopes that any conformant OP must recognise (`openid` is the trigger; `profile`, `email`, `address`, and `phone` request claim bundles; `offline_access` requests a refresh token):
 
 - **`openid`** — required. Trigger that turns an OAuth flow into an OIDC flow.
 - **`profile`** — `name`, `family_name`, `given_name`, `picture`, `locale`, etc.

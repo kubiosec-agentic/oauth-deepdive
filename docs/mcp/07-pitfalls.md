@@ -1,4 +1,4 @@
-# 9.7 Common MCP-auth pitfalls
+# 10.7 Common MCP-auth pitfalls
 
 A field guide to the failure modes that actually show up.
 

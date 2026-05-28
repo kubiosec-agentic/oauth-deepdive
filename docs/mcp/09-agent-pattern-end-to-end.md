@@ -1,22 +1,22 @@
-# 9.9 The Agent / MCP pattern — OAuth 2.1 end to end
+# 10.9 The Agent / MCP pattern — OAuth 2.1 end to end
 
 > *This page is a 100%-spec-accurate, end-to-end walkthrough of how OAuth 2.1 authorisation works in the MCP **Agent pattern** — where an AI agent (running inside a host application) needs to invoke tools on one or more MCP servers on behalf of a human user. It draws directly from the **MCP 2025-11-25 specification (Authorization)** and the upcoming **draft revision**, both of which reference **OAuth 2.1 draft-ietf-oauth-v2-1-13** as their normative base.*
 >
-> *If you are skim-reading, jump straight to [§9.9.7 The full end-to-end sequence diagram](#9-9-7-the-full-end-to-end-sequence-diagram).*
+> *If you are skim-reading, jump straight to [§10.9.7 The full end-to-end sequence diagram](#1097-the-full-end-to-end-sequence-diagram).*
 
 This is the deepest treatment in the guide. Other pages set things up:
 
 - The OAuth 2.1 base mechanism — [§4.1 Authorization Code + PKCE](../flows/authorization-code-pkce.md).
-- The discovery chain at a high level — [§9.2 Discovery chain](02-discovery-chain.md).
-- Why MCP is a resource server, not its own AS — [§9.1 Architecture](01-architecture.md).
-- Why tokens must be audience-bound — [§9.4 Resource indicators](04-resource-indicators.md).
-- Forward-looking sender-constraint and Token Exchange — [§9.8 Beyond bearer](08-beyond-bearer.md).
+- The discovery chain at a high level — [§10.2 Discovery chain](02-discovery-chain.md).
+- Why MCP is a resource server, not its own AS — [§10.1 Architecture](01-architecture.md).
+- Why tokens must be audience-bound — [§10.4 Resource indicators](04-resource-indicators.md).
+- Forward-looking sender-constraint and Token Exchange — [§10.8 Beyond bearer](08-beyond-bearer.md).
 
 This page consolidates those into one continuous story, with explicit focus on what changes when the *caller* is an **agent**, not a human at a browser.
 
 ---
 
-## 9.9.1 The MCP architecture, in one paragraph
+## 10.9.1 The MCP architecture, in one paragraph
 
 MCP defines a **host → client → server** topology, not the simpler client → server of most OAuth deployments. The **host** (Claude Desktop, an IDE, an agent runtime) is the trust boundary and the OAuth client identity. Inside the host, the **agent** (the LLM with tool-use logic) decides which tools to call. The host owns one **MCP client per server** — each client maintains a stateful JSON-RPC session and a per-server audience-bound access token. The **MCP server** is a pure OAuth 2.1 resource server, validating tokens and exposing tools, resources, and prompts.
 
@@ -51,11 +51,11 @@ Three things to pin down from this:
 
 1. **The agent is not the OAuth client.** The host is. The agent runs inside the host, uses MCP clients (which the host instantiates) to reach MCP servers, but never directly holds an OAuth registration. This matters because OAuth client identity (`client_id`) attaches to the *application*, not the in-application LLM logic.
 2. **One token per MCP server.** The host's OAuth client may obtain *N* tokens — one for each MCP server the agent calls. Each token's `aud` claim binds it to exactly one server, so the same machinery cannot be reused as cross-server replay. This is RFC 8707 in action.
-3. **The agent's identity is a separate concept** from the OAuth client identity. In the simple pattern, the agent is implicit (the AS sees only `(client_id, sub=user)` and the agent's behaviour shows up in audit logs as "the client did X"). In the [Token Exchange pattern](#9-9-8-the-agent-pattern-token-exchange-and-the-act-claim), the agent is explicitly encoded in the token's `act` claim.
+3. **The agent's identity is a separate concept** from the OAuth client identity. In the simple pattern, the agent is implicit (the AS sees only `(client_id, sub=user)` and the agent's behaviour shows up in audit logs as "the client did X"). In the [Token Exchange pattern](#1098-the-agent-pattern-token-exchange-and-the-act-claim), the agent is explicitly encoded in the token's `act` claim.
 
 ---
 
-## 9.9.2 What the spec actually requires (2025-11-25)
+## 10.9.2 What the spec actually requires (2025-11-25)
 
 This list is verbatim from [the 2025-11-25 spec](https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization). The MUST/SHOULD/MAY come from the spec text:
 
@@ -72,7 +72,7 @@ This list is verbatim from [the 2025-11-25 spec](https://modelcontextprotocol.io
 
 ---
 
-## 9.9.3 Discovery — RFC 9728 → RFC 8414 (or OIDC)
+## 10.9.3 Discovery — RFC 9728 → RFC 8414 (or OIDC)
 
 When the host's MCP client makes its first request to an MCP server without a (valid) token, the server returns `401 Unauthorized` and the client follows a chain to find everything it needs.
 
@@ -156,7 +156,7 @@ HTTP/1.1 200 OK
 
 ---
 
-## 9.9.4 Client registration — three paths, in priority order
+## 10.9.4 Client registration — three paths, in priority order
 
 This is where the 2025-11-25 spec diverges most from the original (2025-03-26) MCP spec. There are now **three** registration mechanisms, and the spec gives an explicit priority order:
 
@@ -278,7 +278,7 @@ Skipping a level only if the AS doesn't support it.
 
 ---
 
-## 9.9.5 The authorization step — same OAuth 2.1, MCP-specific parameters
+## 10.9.5 The authorization step — same OAuth 2.1, MCP-specific parameters
 
 This is the *user-at-AS* part of the flow — see [§2 Vocabulary](../02-concepts-vocabulary.md#the-authorization-step--where-the-user-comes-in) for the general concept. MCP's specific requirements layered on top:
 
@@ -356,7 +356,7 @@ The decoded access token, by [RFC 9068](https://www.rfc-editor.org/rfc/rfc9068.h
 
 ---
 
-## 9.9.6 Token usage and server-side validation
+## 10.9.6 Token usage and server-side validation
 
 After the token is issued, every MCP request from the host carries it as a Bearer token in the `Authorization` header. The spec is explicit:
 
@@ -410,9 +410,9 @@ WWW-Authenticate: Bearer error="insufficient_scope",
 
 ---
 
-## 9.9.7 The full end-to-end sequence diagram
+## 10.9.7 The full end-to-end sequence diagram
 
-This is the one diagram that shows everything for the single-server case. Multi-server fan-out and Token Exchange are in [§9.9.8](#9-9-8-the-agent-pattern-token-exchange-and-the-act-claim).
+This is the one diagram that shows everything for the single-server case. Multi-server fan-out and Token Exchange are in [§10.9.8](#1098-the-agent-pattern-token-exchange-and-the-act-claim).
 
 ```mermaid
 sequenceDiagram
@@ -495,7 +495,7 @@ A few things to notice in the diagram that distinguish the agent pattern:
 
 ---
 
-## 9.9.8 The agent pattern: Token Exchange and the `act` claim
+## 10.9.8 The agent pattern: Token Exchange and the `act` claim
 
 The preceding section covered the *base* case: one user, one host, one MCP server. The agent pattern gets interesting when:
 
@@ -597,11 +597,11 @@ The MCP spec (2025-11-25 and draft) does **not** require Token Exchange — it's
 - Auditable agent attribution (`act` claims in logs).
 - Multi-agent delegation chains.
 
-Adoption is rising fast in enterprise MCP deployments through 2026, and is a likely candidate for inclusion in future MCP spec revisions. The [§9.8 Beyond bearer](08-beyond-bearer.md) page tracks this.
+Adoption is rising fast in enterprise MCP deployments through 2026, and is a likely candidate for inclusion in future MCP spec revisions. The [§10.8 Beyond bearer](08-beyond-bearer.md) page tracks this.
 
 ---
 
-## 9.9.9 Common variations of the agent pattern
+## 10.9.9 Common variations of the agent pattern
 
 ```mermaid
 flowchart TB
@@ -621,7 +621,7 @@ For each, the spec compliance bar is the same — the wire-level OAuth handshake
 
 ---
 
-## 9.9.10 Pitfalls specific to the agent pattern
+## 10.9.10 Pitfalls specific to the agent pattern
 
 Beyond [the general MCP pitfalls](07-pitfalls.md), these are agent-specific:
 
@@ -636,7 +636,7 @@ Beyond [the general MCP pitfalls](07-pitfalls.md), these are agent-specific:
 
 ---
 
-## 9.9.11 What's coming
+## 10.9.11 What's coming
 
 The MCP 2026-07-28 release candidate (currently in draft form) is the most substantial revision since launch. Key direction-of-travel items that affect the agent pattern:
 

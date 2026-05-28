@@ -1,4 +1,4 @@
-# 9.1 Architecture and role split
+# 10.1 Architecture and role split
 
 The single most important architectural decision in the MCP authorization spec is that **the MCP server is purely an OAuth 2.1 Resource Server**.
 
@@ -49,7 +49,7 @@ The MCP server is now small in scope: a few hundred lines of token-validation co
 ## Implications
 
 - **One MCP server can trust multiple ASes.** The PRM document lists them. An enterprise can run its own AS for employee access while still letting trusted external users authenticate via a SaaS AS — both sets of tokens accepted by the same server, each validated against its own issuer.
-- **One AS can serve many MCP servers.** Each MCP server has a distinct canonical URI (used as the `aud` claim — see [§9.4](04-resource-indicators.md)). Tokens are bound to one server's URI and rejected by all others, even though they all trust the same AS.
+- **One AS can serve many MCP servers.** Each MCP server has a distinct canonical URI (used as the `aud` claim — see [§10.4](04-resource-indicators.md)). Tokens are bound to one server's URI and rejected by all others, even though they all trust the same AS.
 - **The MCP server never sees credentials.** No passwords, no MFA challenges, no session cookies. Just bearer tokens it validates.
 
 ## What about local / stdio MCP servers?

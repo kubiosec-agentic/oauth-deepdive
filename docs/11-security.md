@@ -1,4 +1,4 @@
-# 10. Security considerations and common pitfalls
+# 11. Security considerations and common pitfalls
 
 Even with OAuth 2.1, you can build something insecure. The recurring failure modes, with their defences.
 
@@ -94,4 +94,4 @@ None of these alone is sufficient. Together they make a meaningful target.
 
 ---
 
-← [MCP — Beyond bearer](mcp/08-beyond-bearer.md) · ↑ [README](../README.md) · → Next: [Further reading](12-further-reading.md)
+← [The Agent / MCP pattern](mcp/09-agent-pattern-end-to-end.md) · ↑ [README](../README.md) · → Next: [Further reading](12-further-reading.md)

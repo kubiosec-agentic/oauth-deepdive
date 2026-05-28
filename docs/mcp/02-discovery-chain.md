@@ -1,4 +1,4 @@
-# 9.2 The discovery chain — RFC 9728 → RFC 8414
+# 10.2 The discovery chain — RFC 9728 → RFC 8414
 
 When a client hits an MCP server without a (valid) token, the server returns:
 
@@ -51,7 +51,7 @@ Content-Type: application/json
 
 **Key fields:**
 
-- **`resource`** — the canonical URI of this MCP server. The client will use it as the `resource` parameter in the authorization and token requests (see [§9.4](04-resource-indicators.md)).
+- **`resource`** — the canonical URI of this MCP server. The client will use it as the `resource` parameter in the authorization and token requests (see [§10.4](04-resource-indicators.md)).
 - **`authorization_servers`** — the ASes the MCP server trusts. The client picks one (typically the only one, or prompts the user if more than one).
 - **`scopes_supported`** — the scopes the MCP server understands. The client uses these in the `scope=` parameter at `/authorize`.
 - **`bearer_methods_supported`** — typically `["header"]`. The MCP spec forbids `query` (which would leak tokens to logs).
