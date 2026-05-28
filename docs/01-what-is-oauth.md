@@ -13,8 +13,8 @@ flowchart LR
     AS[Authorization Server]
     RS[Resource Server<br/>API]
 
-    RO -->|1- grants consent| AS
-    C -->|2- requests token| AS
+    C -->|1- requests authorization| AS
+    RO -->|2- authenticates & grants consent| AS
     AS -->|3- issues access token| C
     C -->|4- calls API with token| RS
     RS -->|5- validates token<br/>returns data| C
