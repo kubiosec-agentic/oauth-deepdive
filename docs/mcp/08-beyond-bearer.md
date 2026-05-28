@@ -1,5 +1,9 @@
 # 10.8 Beyond bearer — DPoP and Token Exchange for agents
 
+> **In one line:** Two newer, stronger techniques for situations where a simple access pass is not safe enough.
+>
+> **Why it matters:** Long-running AI agents hold passes in memory for a long time. These methods limit the damage if one is stolen.
+
 Bearer-only tokens are the MCP default in 2026. Two research-leaning patterns are worth tracking because they're appearing in enterprise MCP deployments and are likely candidates for normative inclusion in future spec revisions.
 
 ## DPoP for MCP

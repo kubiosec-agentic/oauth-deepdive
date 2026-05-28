@@ -1,5 +1,9 @@
 # 7. OAuth 2.1 — what consolidated, what died
 
+> **In one line:** The latest tidy-up of the standard — it removes the unsafe old options and makes the safe practices the default.
+>
+> **Why it matters:** If you are building something new, this is the version to follow. This page lists what changed and what is now off-limits.
+
 OAuth 2.1 (draft-ietf-oauth-v2-1, currently at **-15** as of March 2026, intended status: Standards Track) does not invent new mechanisms. It is a **rewrite that obsoletes RFC 6749 and RFC 6750** by folding in the best-practice consensus that had accumulated.
 
 ## What changed at a glance

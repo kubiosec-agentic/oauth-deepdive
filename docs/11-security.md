@@ -1,5 +1,9 @@
 # 11. Security considerations and common pitfalls
 
+> **In one line:** The ways these systems get broken into, each paired with the defence that stops it.
+>
+> **Why it matters:** Even a correct setup can still be insecure. This page is the checklist for spotting and closing the common gaps.
+
 Even with OAuth 2.1, you can build something insecure. The recurring failure modes, with their defences.
 
 ## The taxonomy

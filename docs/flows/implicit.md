@@ -1,5 +1,9 @@
 # 4.2 Implicit (deprecated)
 
+> **In one line:** An old, now-retired shortcut that handed access out too freely.
+>
+> **Why it matters:** You may still find it in older systems. The goal here is to recognise it and know to replace it.
+
 **Status:** removed from OAuth 2.1. If you find this in a codebase today, treat it as a P1 security bug.
 
 **Who this was for:** browser-side SPAs before CORS was widespread on `/token` endpoints. The AS returned the access token directly in the redirect fragment (`#access_token=…`), skipping the back-channel exchange.

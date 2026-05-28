@@ -1,5 +1,9 @@
 # 10.6 What an MCP server actually has to implement
 
+> **In one line:** A practical checklist of what a tool actually has to build in order to accept these access passes safely.
+>
+> **Why it matters:** It turns out to be surprisingly little — mostly checking passes. This page is for anyone who has to write that code.
+
 The MCP server's auth code is mostly **token validation** — a few hundred lines, not a few thousand. The AS does the heavy lifting (login, MFA, consent, token issuance, DCR).
 
 Here is the concrete minimum-bar checklist.

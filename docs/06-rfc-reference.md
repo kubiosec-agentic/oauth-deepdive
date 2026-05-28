@@ -1,5 +1,9 @@
 # 6. The OAuth ecosystem — supporting RFCs you should know
 
+> **In one line:** A quick lookup table of the official documents behind each feature mentioned in this guide.
+>
+> **Why it matters:** When you need the authoritative source for a detail, this tells you exactly which document to open.
+
 | RFC | What it gives you |
 |---|---|
 | **6749** | OAuth 2.0 framework. The "main" spec. |

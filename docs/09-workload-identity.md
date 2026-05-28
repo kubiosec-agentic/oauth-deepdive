@@ -1,5 +1,9 @@
 # 9. Workload Identity Federation and Agent Identities
 
+> **In one line:** How machines and automated programs prove who they are to each other without being handed a permanent password.
+>
+> **Why it matters:** Long-lived passwords leak and rarely get changed. This page covers the modern replacement — including how AI agents get their own identity.
+
 OAuth's original threat model was *user-meets-API*. Over the last decade the dominant question has shifted to *workload-meets-API* and, more recently, *agent-meets-API*. This chapter is about the modern answer to "how does a non-human caller authenticate without long-lived secrets" — first the general pattern (Workload Identity Federation), then a vendor-specific implementation that's especially relevant to MCP and AI agents (Microsoft Entra Agent ID).
 
 ## 9.1 The problem with long-lived secrets

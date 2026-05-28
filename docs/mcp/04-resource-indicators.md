@@ -1,5 +1,9 @@
 # 10.4 Resource indicators — RFC 8707 and audience binding
 
+> **In one line:** Stamping each access pass with the one tool it is allowed to use, so it cannot be reused anywhere else.
+>
+> **Why it matters:** Without this, a pass collected for one tool could be turned against another. With many tools connected at once, it is the most important safeguard on this page.
+
 **This is the rule that surprises people:** MCP clients **MUST** include the `resource` parameter (RFC 8707) on both the authorization request and the token request, set to the canonical URI of the MCP server they intend to call.
 
 ## The confused-deputy problem

@@ -1,5 +1,9 @@
 # 1. What OAuth actually is (and isn't)
 
+> **In one line:** What OAuth is: a way to let an app use part of your account on another service without ever handing that app your password.
+>
+> **Why it matters:** It is the single idea everything else in this guide builds on. Grasp this and the rest is detail.
+
 OAuth 2.0 is an **authorization-delegation framework**. Its job is to let a *client* (some application) obtain limited, scoped access to a *resource* (an API) on behalf of a *resource owner* (usually a human user), without that client ever seeing the resource owner's credentials.
 
 ```mermaid

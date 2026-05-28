@@ -1,5 +1,9 @@
 # 4.5 Refresh Token
 
+> **In one line:** How an app quietly gets a fresh pass when the old one expires, without making the user log in again.
+>
+> **Why it matters:** It is what keeps you signed in for days. Done wrong it is also a favourite target for attackers, so this page shows how to do it safely.
+
 Not a standalone flow — a continuation. The client trades a refresh token for a fresh access token (and ideally a rotated refresh token).
 
 ## The sequence

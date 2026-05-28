@@ -1,5 +1,9 @@
 # 4.4 Client Credentials
 
+> **In one line:** How one program talks to another with no person involved — a service proving who it is.
+>
+> **Why it matters:** Common for background jobs and automation. The big trap, covered here, is accidentally using it to act for a user it cannot really represent.
+
 **Who this is for:** machine-to-machine. No human, no user context. A service authenticates *as itself*.
 
 ## The sequence

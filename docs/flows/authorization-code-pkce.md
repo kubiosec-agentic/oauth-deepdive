@@ -1,5 +1,9 @@
 # 4.1 Authorization Code (+ PKCE)
 
+> **In one line:** The standard, recommended way for a person to log in and grant an app access through their web browser.
+>
+> **Why it matters:** This is the one to use for almost anything involving a human. The rest of the page shows how it stays safe even if parts of it are intercepted.
+
 **Who this is for:** every user-facing app today — web apps, SPAs, mobile, desktop. With PKCE, it's the only flow OAuth 2.1 endorses for human-driven access.
 
 **Why it exists:** the authorization code is a single-use credential that's safe to pass through the user-agent (browser address bar), because exchanging it for an actual access token requires the client's secret (confidential clients) and/or the PKCE verifier (public clients).

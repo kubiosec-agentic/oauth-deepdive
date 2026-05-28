@@ -1,5 +1,9 @@
 # 4.3 Resource Owner Password Credentials (deprecated)
 
+> **In one line:** An old method where the user typed their password straight into the app — the very thing this technology was meant to avoid.
+>
+> **Why it matters:** It has been retired for good reasons. This page explains them, so you can spot it and move away from it.
+
 **Status:** removed from OAuth 2.1. Most major IdPs have either disabled it or restricted it to legacy migration paths.
 
 **Who this was for:** "trusted first-party" apps where the user could type their password into the client itself, which then POSTed it to the AS.

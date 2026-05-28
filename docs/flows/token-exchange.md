@@ -1,5 +1,9 @@
 # 4.9 Token Exchange (RFC 8693)
 
+> **In one line:** How a service that already holds your access can trade it for a more limited pass to call another service on your behalf.
+>
+> **Why it matters:** It is how to give each downstream step only the access it needs, instead of one all-powerful pass — important once AI assistants start chaining tools together.
+
 Trade one token for another. The grant type is `urn:ietf:params:oauth:grant-type:token-exchange`. Two patterns dominate.
 
 ## The sequence

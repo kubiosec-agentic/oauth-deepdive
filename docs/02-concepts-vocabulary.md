@@ -1,5 +1,9 @@
 # 2. Core concepts and vocabulary
 
+> **In one line:** The handful of words this topic keeps using — who the players are and what each piece is called.
+>
+> **Why it matters:** Almost every later confusion comes from mixing these terms up. A few minutes here saves a lot of head-scratching.
+
 | Term | Meaning |
 |---|---|
 | **Resource Owner** | The entity (usually a human) who owns the data and grants access. |

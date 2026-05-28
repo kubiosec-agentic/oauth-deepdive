@@ -1,5 +1,9 @@
 # 4.6 Device Authorization Grant (RFC 8628)
 
+> **In one line:** How you sign in on a device that is awkward to type on — like a TV — by using your phone instead.
+>
+> **Why it matters:** It is the pattern behind “go to this web address and enter this code.” Handy whenever a screen has no real keyboard.
+
 **Who this is for:** input-constrained devices — TVs, CLIs, IoT — that can display a code but can't reasonably host a browser-redirect flow.
 
 ## The sequence

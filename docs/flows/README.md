@@ -1,5 +1,9 @@
 # 4. The flows — overview and decision tree
 
+> **In one line:** A map of the different ways an app can ask for access, and how to pick the right one.
+>
+> **Why it matters:** There are several methods but only a few you should use today. This page steers you to the right choice and away from the dead ends.
+
 OAuth 2.0 defined four core grants plus refresh; extensions added several more. OAuth 2.1 retires two of them outright. This page is the map.
 
 ## The full set, at a glance

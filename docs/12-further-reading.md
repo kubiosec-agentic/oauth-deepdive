@@ -1,5 +1,9 @@
 # 12. Further reading
 
+> **In one line:** Where to go next — the source documents, books, and sites worth your time.
+>
+> **Why it matters:** This guide is a map; these are the places to dig deeper on whatever topic caught your interest.
+
 ## Specs
 
 Chronological by relevance.

@@ -1,5 +1,9 @@
 # 10.2 The discovery chain — RFC 9728 → RFC 8414
 
+> **In one line:** How an assistant, starting from just a web address, works out where to log in and what it is allowed to ask for.
+>
+> **Why it matters:** It is what lets one assistant connect to any compliant tool without being hand-configured for each one.
+
 When a client hits an MCP server without a (valid) token, the server returns:
 
 ```http

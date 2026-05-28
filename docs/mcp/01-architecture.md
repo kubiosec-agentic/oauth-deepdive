@@ -1,5 +1,9 @@
 # 10.1 Architecture and role split
 
+> **In one line:** Who does what when an AI assistant connects to a tool: the tool only checks passes, while a separate specialist handles logging people in.
+>
+> **Why it matters:** This split is the key design choice in the whole section. Once it clicks, everything else here falls into place.
+
 The single most important architectural decision in the MCP authorization spec is that **the MCP server is purely an OAuth 2.1 Resource Server**.
 
 It does *not* mint tokens. It does *not* run an authorization endpoint. It does *not* know how to authenticate users. It delegates all of that to a separate **Authorization Server (AS)** — which can be Entra ID, Okta, Auth0, Keycloak, WorkOS, a homegrown AS, or anything else that speaks the standards.

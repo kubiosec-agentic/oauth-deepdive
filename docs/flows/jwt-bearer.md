@@ -1,5 +1,9 @@
 # 4.7 JWT Bearer assertion grant (RFC 7523)
 
+> **In one line:** How an automated system proves who it is using a short-lived signed note instead of a long-lived password.
+>
+> **Why it matters:** It is the modern way to avoid stashing secret keys in code and config files, which is where most leaks come from.
+
 The client presents a *signed JWT* as its grant. Used heavily in cloud federation.
 
 ## The sequence

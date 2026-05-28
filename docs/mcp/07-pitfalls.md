@@ -1,5 +1,9 @@
 # 10.7 Common MCP-auth pitfalls
 
+> **In one line:** The mistakes people actually make when wiring this up, and how to avoid each one.
+>
+> **Why it matters:** Every item here is a real-world failure. Reading it is far cheaper than discovering them the hard way.
+
 A field guide to the failure modes that actually show up.
 
 ```mermaid

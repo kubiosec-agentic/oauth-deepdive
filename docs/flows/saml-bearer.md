@@ -1,5 +1,9 @@
 # 4.8 SAML 2.0 Bearer assertion grant (RFC 7522)
 
+> **In one line:** The same idea as the previous page, but using an older corporate sign-in format.
+>
+> **Why it matters:** You will mostly meet this when bridging older company systems to newer ones. For anything new, the previous page is the better choice.
+
 The same pattern as [JWT Bearer](jwt-bearer.md), but the assertion is a SAML 2.0 token instead of a JWT.
 
 ## When you'll see this

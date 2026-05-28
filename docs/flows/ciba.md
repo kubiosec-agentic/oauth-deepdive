@@ -1,5 +1,9 @@
 # 4.10 CIBA — Client-Initiated Backchannel Authentication
 
+> **In one line:** A way to start a sign-in on one device and approve it on another — for example, a call-centre agent starts it and you approve on your phone.
+>
+> **Why it matters:** It is built for cases where the person approving is not sitting at the device making the request. Useful for high-trust confirmations.
+
 OpenID Foundation spec, not strictly an OAuth IETF document, but increasingly relevant.
 
 ## The sequence

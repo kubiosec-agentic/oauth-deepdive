@@ -1,5 +1,9 @@
 # 10.9 The Agent / MCP pattern — OAuth 2.1 end to end
 
+> **In one line:** The complete, detailed picture of how an AI agent gets and uses access on a user’s behalf, with the exact rules cited.
+>
+> **Why it matters:** It is the deepest, most thorough page in the guide — the one to come back to when you need every detail right.
+
 > *This page is a 100%-spec-accurate, end-to-end walkthrough of how OAuth 2.1 authorisation works in the MCP **Agent pattern** — where an AI agent (running inside a host application) needs to invoke tools on one or more MCP servers on behalf of a human user. It draws directly from the **MCP 2025-11-25 specification (Authorization)** and the upcoming **draft revision**, both of which reference **OAuth 2.1 draft-ietf-oauth-v2-1-13** as their normative base.*
 >
 > *If you are skim-reading, jump straight to [§10.9.7 The full end-to-end sequence diagram](#1097-the-full-end-to-end-sequence-diagram).*

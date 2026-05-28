@@ -1,5 +1,9 @@
 # 5. Tokens, in detail
 
+> **In one line:** The different kinds of access passes the system hands out, and how a service checks that one is genuine.
+>
+> **Why it matters:** Each kind has its own lifespan and risks. Knowing the differences is what stops a leaked pass from becoming a break-in.
+
 ## Bearer tokens (RFC 6750)
 
 The default. Send `Authorization: Bearer <token>`. Whoever has the token can use it. The security model leans entirely on TLS and the assumption that the token never leaks. This was OAuth 2.0's original compromise — drop request signing for protocol simplicity — and most token-theft incidents trace back to it.

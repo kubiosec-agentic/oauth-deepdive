@@ -1,5 +1,9 @@
 # 3. The OAuth timeline — how we got here
 
+> **In one line:** A short history of how this technology grew, step by step, into what we use today.
+>
+> **Why it matters:** Many of the rules look arbitrary until you see the specific problem each one was invented to fix. The story explains the “why.”
+
 Understanding *why* OAuth 2.1 and the MCP profile look the way they do requires the lineage.
 
 ```mermaid

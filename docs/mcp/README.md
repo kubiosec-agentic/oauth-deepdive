@@ -1,5 +1,9 @@
 # 10. MCP authorization — overview
 
+> **In one line:** How AI assistants are allowed to safely connect to outside tools and data, and why OAuth is the method that was chosen.
+>
+> **Why it matters:** This is the heart of the guide for anyone building AI assistants. The pages here show exactly how that access is set up and checked.
+
 The **Model Context Protocol (MCP)** is an open protocol, originally from Anthropic, that defines how AI applications (clients — e.g., Claude Desktop, an IDE plugin, an agent) connect to external tools and data sources (servers — e.g., a GitHub MCP server, a database MCP server).
 
 MCP servers expose **tools**, **resources**, and **prompts**; clients negotiate capabilities and invoke them over JSON-RPC carried by stdio, SSE, or **Streamable HTTP**. As soon as MCP servers started exposing real user data over a network transport, the question *"how do we authorize this?"* became unavoidable — and **OAuth 2.1** is the answer the MCP working group converged on.

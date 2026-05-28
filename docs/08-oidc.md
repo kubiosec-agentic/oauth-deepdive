@@ -1,5 +1,9 @@
 # 8. OpenID Connect (OIDC) — the authentication layer
 
+> **In one line:** An add-on that answers a different question: not just “may this app do something,” but “who exactly is this person.”
+>
+> **Why it matters:** It is the technology behind every “Sign in with Google / Apple” button. If you need to know the user’s identity, this is the layer that provides it.
+
 OAuth 2.0 is about **authorization** — "this client may do that thing." OpenID Connect (OIDC) is the standard layer on top that adds **authentication** — "this is who the user is, and here is verifiable proof."
 
 OIDC 1.0 was finalised by the OpenID Foundation in 2014. It's where "Sign in with Google", "Sign in with Apple", and the entire enterprise SSO industry live. Every consumer-facing social-login button you've clicked is OIDC.

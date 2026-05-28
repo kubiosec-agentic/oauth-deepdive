@@ -1,5 +1,9 @@
 # 10.5 The full handshake, end to end
 
+> **In one line:** All the earlier pieces shown together as one start-to-finish walkthrough of an assistant connecting and making its first call.
+>
+> **Why it matters:** It is the “see it all in one place” page. If the individual steps felt abstract, this ties them into a single story.
+
 This is everything from the preceding pages, stitched together into one sequence.
 
 ```mermaid
