@@ -62,4 +62,4 @@ If the MCP server runs as a subprocess of the client (stdio transport), the trus
 
 ---
 
-← [MCP overview](README.md) · ↑ [README](../../README.md) · → Next: [The discovery chain](02-discovery-chain.md)
+← [A plain-English walkthrough](walkthrough.md) · ↑ [README](../../README.md) · → Next: [The discovery chain](02-discovery-chain.md)

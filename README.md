@@ -4,6 +4,18 @@
 
 ---
 
+## Start here
+
+New to this topic? You don't have to read all twelve chapters to get the core idea. If you read nothing else, read these, in order:
+
+1. [What OAuth actually is (and isn't)](docs/01-what-is-oauth.md) — the one core idea.
+2. [Core concepts and vocabulary](docs/02-concepts-vocabulary.md) — the words everything else uses.
+3. [Authorization Code + PKCE](docs/flows/authorization-code-pkce.md) — the one login method you'll actually use.
+4. [Tokens, in detail](docs/05-tokens.md) — what the app receives and how it's checked.
+5. [MCP — a plain-English walkthrough](docs/mcp/walkthrough.md) — the whole AI-assistant flow told as a simple story.
+
+Keep the [Glossary](docs/glossary.md) open alongside whatever you're reading — every term is defined there in one or two plain sentences.
+
 ## How this is organised
 
 The material is split into short, focused pages. Read top-to-bottom for a course-like flow, or jump straight to a topic.
@@ -57,6 +69,7 @@ flowchart LR
 ### OAuth 2.1 for MCP — the dedicated section
 
 10. [MCP authorization — overview](docs/mcp/README.md)
+    - [A plain-English walkthrough](docs/mcp/walkthrough.md) — *start here: the whole flow as a simple story*
     - 10.1 [Architecture and role split](docs/mcp/01-architecture.md)
     - 10.2 [The discovery chain (RFC 9728 → RFC 8414)](docs/mcp/02-discovery-chain.md)
     - 10.3 [Dynamic Client Registration in MCP (RFC 7591)](docs/mcp/03-dynamic-client-registration.md)
@@ -71,6 +84,10 @@ flowchart LR
 
 11. [Security considerations and common pitfalls](docs/11-security.md)
 12. [Further reading](docs/12-further-reading.md)
+
+### Reference
+
+- [Glossary — plain-language definitions](docs/glossary.md) — every key term in one or two everyday sentences
 
 ---
 

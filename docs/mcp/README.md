@@ -10,6 +10,8 @@ MCP servers expose **tools**, **resources**, and **prompts**; clients negotiate 
 
 This chapter is the long-form treatment of the MCP authorization profile.
 
+> **New to this?** Start with the [plain-English walkthrough](walkthrough.md) — the whole flow told as a simple story (one person, one assistant, one email tool) before any technical detail. Then come back here for the formal pages.
+
 ## The pages
 
 ```mermaid
@@ -25,6 +27,7 @@ flowchart TB
     H --> I[9. Agent/MCP end-to-end<br/>spec-cited deep dive]
 ```
 
+- **[A plain-English walkthrough](walkthrough.md)** — start here: the whole flow as a simple story, no protocol detail
 - 10.1 [Architecture and role split](01-architecture.md) — why the MCP server is *only* a resource server
 - 10.2 [The discovery chain](02-discovery-chain.md) — how RFC 9728 and RFC 8414 stitch together
 - 10.3 [Dynamic Client Registration in MCP](03-dynamic-client-registration.md) — RFC 7591 in practice
@@ -55,4 +58,4 @@ When this guide says "the spec," it means the **2025-11-25 stable** spec unless 
 
 ---
 
-← [Workload Identity & Agent ID](../09-workload-identity.md) · ↑ [README](../../README.md) · → Next: [Architecture and role split](01-architecture.md)
+← [Workload Identity & Agent ID](../09-workload-identity.md) · ↑ [README](../../README.md) · → Next: [A plain-English walkthrough](walkthrough.md)
