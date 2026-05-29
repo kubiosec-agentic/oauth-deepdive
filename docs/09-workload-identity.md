@@ -120,6 +120,8 @@ Practical effects:
 - **Revocable per scope.** Remove the federation trust rule and that path stops working immediately. No need to find and rotate every workload's secret.
 - **Composable.** A workload can hold multiple federated identities at once (e.g., a CI job that needs AWS and GCP both), each issued just-in-time.
 
+> **Hands-on lab.** Auditability is only real if something actually *reads* those logs. [kubiosec-agentic/aws-sts-attribution](https://github.com/kubiosec-agentic/aws-sts-attribution) is the attribution layer for exactly this flow: it watches CloudTrail STS events, and for a GitHub Actions web-identity assumption it pulls out the OIDC issuer and the `sub` (`repo:owner/repo:ref:refs/heads/branch`) so every call is traced to the precise workflow. It does the same for MCP-gateway sessions using `sts:SourceIdentity` + session tags to name the end user, tool, and client — AWS's version of the delegation/`act` attribution from [§4.9](04-flows/token-exchange.md). Terraform + a Lambda classifier; runnable end to end.
+
 ## 9.5 SPIFFE — the vendor-neutral standard
 
 The table above lists SPIFFE/SPIRE as one platform among many, but it deserves its own section because **SPIFFE is the open standard that the rest of WIF rhymes with**. Most cloud-vendor WIF systems implement SPIFFE-compatible (or SPIFFE-influenced) concepts. If you want workload identity without being locked into a particular cloud's identity system, SPIFFE is the answer.
