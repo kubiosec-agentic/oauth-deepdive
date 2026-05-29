@@ -288,6 +288,8 @@ This is the right pattern when the trust relationship between the client and the
 - **Governance maturity varies.** As of 2026 the Conditional Access and Identity Governance integrations for Agent ID are functional but still maturing: review and approval workflows for agent ownership, in particular, lag the equivalent flows for human users.
 - **Audit-trail responsibility is shared.** Entra logs what tokens it issued; the MCP server logs what it accepted. Stitching those together for a complete picture requires SIEM-level integration, not just Entra alone.
 
+> **Hands-on lab.** [kubiosec-agentic/entra-agent-id-labs](https://github.com/kubiosec-agentic/entra-agent-id-labs) is a set of runnable labs (verified against a live preview tenant) that build up from a plain client-credentials app registration to a real Entra Agent ID blueprint with the `fmi_path` token exchange, then to ephemeral per-run identities, on-behalf-of-a-user, governance, and a zero-credential sidecar. Each lab ships the same resource-server validation seam, so you can watch the *identity claim shape* change while the verification stays constant. Its [SPEC §5](https://github.com/kubiosec-agentic/entra-agent-id-labs/blob/main/SPEC.md) lists the resource-server checks; note that today's Agent ID flow still issues **v1 tokens** (`iss=sts.windows.net`, `appid`), which the labs' validators accept alongside v2.
+
 ## 9.8 Why this is the direction of travel
 
 ```mermaid

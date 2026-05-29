@@ -118,6 +118,8 @@ Most OAuth deployments historically had one resource server per AS, so audience 
 
 The 2025-11-25 MCP spec tightened the language around resource-parameter handling. It is now **REQUIRED** on token requests; servers **MUST** reject tokens with a non-matching `aud`. Some ASes (notably some early Entra ID configurations) emit tokens without a tight `aud` by default: these need explicit policy configuration to be MCP-conformant.
 
+> **Entra in practice.** Microsoft Entra mostly uses the OAuth v2 **`scope` model** rather than the RFC 8707 `resource` parameter: the audience is derived from the *resource encoded in the scope string* you request, e.g. `api://<server-app-id>/mcp.read` (delegated) or `api://<server-app-id>/.default` (app-only). Concretely, that means the MCP server is its own **app registration** (with an Application ID URI and exposed scopes/roles), the client is a *separate* app registration, and you **link** them by granting the client API permission to the server (or pre-authorizing the client). The resulting token's `aud` is the server app. A generic MCP client that only knows how to send `resource=` may not produce the audience you expect on Entra. The [entra-agent-id-labs](https://github.com/kubiosec-agentic/entra-agent-id-labs) `agent-id-lab` shows that two-registration setup end to end.
+
 ---
 
 ← [DCR](03-dynamic-client-registration.md) · ↑ [MCP](README.md) · → Next: [The full handshake](05-handshake.md)

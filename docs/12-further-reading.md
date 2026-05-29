@@ -40,6 +40,7 @@ Chronological by relevance.
 ## Hands-on labs
 
 - [kubiosec-ai/JWT_tooling](https://github.com/kubiosec-ai/JWT_tooling): runnable companions to this guide. [`jwt_cli`](https://github.com/kubiosec-ai/JWT_tooling/tree/main/jwt_cli) signs/verifies RS256 JWTs with OpenSSL and demonstrates JWKS/`jku` (secure-by-default validator, with an opt-in attack-demo flag). [`app`](https://github.com/kubiosec-ai/JWT_tooling/tree/main/app) is a FastMCP OAuth 2.1 resource server validating bearer JWTs.
+- [kubiosec-agentic/entra-agent-id-labs](https://github.com/kubiosec-agentic/entra-agent-id-labs): nine labs wiring an AI agent to a protected resource on Microsoft Entra, from a plain client-credentials app registration up to a real Entra Agent ID blueprint (`fmi_path` exchange), on-behalf-of-a-user, governance, and a zero-credential sidecar. Pairs with [Chapter 9](09-workload-identity.md). (Preview surface: verify against your own tenant.)
 
 ## Books and long-form
 
