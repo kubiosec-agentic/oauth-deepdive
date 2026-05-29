@@ -185,7 +185,7 @@ sequenceDiagram
 4. Client POSTs to `/token` with the `code` **and** the original `code_verifier`.
 5. AS computes `SHA-256(verifier)`, compares to the stored challenge, returns the access (and optionally refresh) token if they match.
 
-## HTTP — step 2, the authorization request
+## HTTP — the authorization request
 
 ```http
 GET /authorize?
@@ -211,7 +211,7 @@ Location: https://client.example.com/cb?
 
 Notice: the code is in the URL. **That's fine** because PKCE makes the code alone insufficient.
 
-## HTTP — step 4, the token exchange
+## HTTP — the token exchange
 
 ```http
 POST /token HTTP/1.1
