@@ -71,7 +71,24 @@ Sender-constraint is rapidly becoming the expectation for high-value APIs. Open-
 
 ## JWT access tokens (RFC 9068)
 
-Stating the obvious: an opaque access token is just a string; a JWT access token is a signed JSON document. RFC 9068 standardises the claims.
+Stating the obvious: an opaque access token is just a string; a JWT access token is a signed document you can open up and read. RFC 9068 standardises what goes in it.
+
+A JWT is actually **three parts joined by dots** — `header.payload.signature` — and each part is Base64url-encoded (a reversible text encoding, *not* encryption). On the wire it's one long opaque-looking string:
+
+```
+eyJhbGciOiJSUzI1NiIsInR5cCI6ImF0K2p3dCJ9.eyJpc3MiOiJodHRwczovL2FzL...0In0.Qm9nYWVydHM-signature-bytes
+```
+
+Decode the **first part** and you get the **header** — a couple of fields describing the token itself: which algorithm signed it (`alg`) and what type of token it is (`typ`):
+
+```json
+{
+  "alg": "RS256",
+  "typ": "at+jwt"
+}
+```
+
+Decode the **second part** and you get the **payload** — the actual claims (the facts about who and what the token is for). This is the part shown in most examples:
 
 ```json
 {
@@ -88,9 +105,11 @@ Stating the obvious: an opaque access token is just a string; a JWT access token
 }
 ```
 
+The **third part** is the **signature**: the resource server recomputes it using the Authorization Server's public key to confirm the token is genuine and hasn't been altered. (Because the first two parts are only *encoded*, not encrypted, anyone can read them — the signature is what makes them trustworthy, not secret.)
+
 JWT access tokens let the RS validate the token without a round-trip to the AS — at the cost of any revocation being delayed to token expiry. Pick short lifetimes (5–15 min) and lean on the `jti` + a deny-list if you need immediate revocation.
 
-**JWT access tokens are not ID tokens.** Some implementations conflate them. Every JWT begins with a small *header* — a few fields describing the token itself, separate from the claims shown above — and one of those fields, `typ` (type), should be set to `at+jwt`. That value signals "this is an access token, not an id_token." It's a tiny but load-bearing detail: a server that skips this check can be tricked into accepting an ID token (meant only for the app) where an access token was expected.
+**JWT access tokens are not ID tokens.** Some implementations conflate them. Notice the `typ` field in the header above is `at+jwt` — that's what signals "this is an access token, not an id_token." It's a tiny but load-bearing detail: a server that skips this check can be tricked into accepting an ID token (meant only for the app) where an access token was expected.
 
 ## Token introspection (RFC 7662)
 
