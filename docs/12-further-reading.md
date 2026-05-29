@@ -37,6 +37,10 @@ Chronological by relevance.
 - [MCP, OAuth 2.1, PKCE, and the Future of AI Authorization (Aembit)](https://aembit.io/blog/mcp-oauth-2-1-pkce-and-the-future-of-ai-authorization/): accessible overview
 - [Technical Deconstruction of MCP Authorization (kane.mx)](https://kane.mx/posts/2025/mcp-authorization-oauth-rfc-deep-dive/): RFC-by-RFC walkthrough
 
+## Hands-on labs
+
+- [kubiosec-ai/JWT_tooling](https://github.com/kubiosec-ai/JWT_tooling): runnable companions to this guide. [`jwt_cli`](https://github.com/kubiosec-ai/JWT_tooling/tree/main/jwt_cli) signs/verifies RS256 JWTs with OpenSSL and demonstrates JWKS/`jku` (secure-by-default validator, with an opt-in attack-demo flag). [`app`](https://github.com/kubiosec-ai/JWT_tooling/tree/main/app) is a FastMCP OAuth 2.1 resource server validating bearer JWTs.
+
 ## Books and long-form
 
 - *OAuth 2 in Action*: Justin Richer and Antonio Sanso. Still the best book on the framework.
