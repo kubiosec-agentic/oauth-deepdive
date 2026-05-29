@@ -110,6 +110,14 @@ Two things, working together:
 
 So the attacker is stuck. They can guess random strings, but each guess has a vanishingly small probability of hashing to the right value. They can replay the challenge they saw in the URL, but the AS hashes whatever the client sends: sending the hash doesn't help, because `SHA256(SHA256(V)) ≠ SHA256(V)`.
 
+### Does the length of the verifier matter? (the entropy angle)
+
+Yes. The whole defence rests on the verifier being **unguessable**, which comes down to entropy. RFC 7636 requires `code_verifier` to be 43 to 128 characters from a fixed unreserved set, and the recommended recipe is 32 random bytes from a cryptographic random generator, Base64url-encoded into 43 characters carrying about 256 bits of entropy. To forge a match an attacker would have to either guess V outright (roughly 2^256 possibilities) or find some different `V'` that hashes to the same challenge (a SHA-256 preimage, also roughly 2^256). Both are far beyond what any amount of computing can reach.
+
+Brute force is a non-issue for a second, independent reason: the attacker never gets a stream of guesses to grind against. The authorization code is **single-use and short-lived** (it expires in seconds to about a minute, and is invalidated the moment it is redeemed or a wrong verifier is presented), and the `/token` endpoint should be rate-limited. There is no oracle to hammer.
+
+So the real risk is never the maths, it is a **badly generated verifier**: a weak or predictable random source, a too-short string, or using `code_challenge_method=plain` (where the challenge simply equals the verifier and protects nothing, which is why OAuth 2.1 forbids it). Generate V from a proper cryptographic random generator and use `S256`, and the attack surface is effectively zero.
+
 ## Other variants of the same family
 
 The mobile URL-scheme hijack is the most vivid example, but the same defence works against several related attacks:
