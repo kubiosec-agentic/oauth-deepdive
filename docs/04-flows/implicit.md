@@ -8,6 +8,8 @@
 
 **Who this was for:** browser-side SPAs before CORS was widespread on `/token` endpoints. The AS returned the access token directly in the redirect fragment (`#access_token=…`), skipping the back-channel exchange.
 
+> **What is CORS?** *Cross-Origin Resource Sharing* is a browser safety rule: by default, JavaScript running on one site (say `app.example.com`) is **not** allowed to call a server on a different site (say `as.example.com`) unless that server explicitly opts in by sending the right response headers. In the early SPA era, authorization servers didn't send those headers on their `/token` endpoint, so a SPA's JavaScript simply could not make the normal back-channel call to exchange a code for a token. Implicit was the workaround: have the AS hand the token straight back in the redirect URL instead. Once authorization servers added CORS support on `/token`, that workaround was no longer needed, and the safer [Authorization Code + PKCE](authorization-code-pkce.md) flow works fine from browser JavaScript.
+
 ## What it looked like
 
 ```mermaid
