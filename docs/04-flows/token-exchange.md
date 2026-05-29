@@ -6,21 +6,37 @@
 
 Trade one token for another. The grant type is `urn:ietf:params:oauth:grant-type:token-exchange`. Two patterns dominate.
 
+**First, the two words that trip people up.** A token is only valid at the service it was issued for (its audience). When one service has to call another to finish a job, it runs into a wall: the token it holds names the wrong audience.
+
+- **Upstream** is the token the calling service *already holds*, issued for itself.
+- **Downstream** is the *next* service it now needs to call, which would reject that upstream token.
+
+Token Exchange is how the calling service hands its upstream token to the Authorization Server and gets back a fresh token whose audience is the downstream service, usually with a narrower scope.
+
 ## The sequence
+
+A concrete walk-through: a user calls an **Orders API**, which must charge them through a separate **Payments API**.
 
 ```mermaid
 sequenceDiagram
     autonumber
-    participant C as Client / Service
+    participant U as User
+    participant Orders as Orders API<br/>(the calling service)
     participant AS as Authorization Server
-    participant DS as Downstream Service
+    participant Pay as Payments API<br/>(downstream service)
 
-    Note over C: Holds a token for upstream audience
-    C->>AS: POST /token<br/>grant_type=token-exchange<br/>&subject_token=...<br/>&audience=DS<br/>&scope=narrow
-    AS->>AS: Validate subject token<br/>+ policy + scope<br/>+ delegation/impersonation
-    AS->>C: 200 { access_token for DS,<br/>narrower scope }
-    C->>DS: Bearer ... (audience-bound to DS)
+    U->>Orders: Call Orders API<br/>Bearer token-A (audience = Orders API)
+    Note over Orders: token-A was issued FOR Orders API (the "upstream" token).<br/>Payments API would reject it — wrong audience.
+    Note over Orders: To finish the order, Orders must call<br/>Payments API on the user's behalf.
+    Orders->>AS: POST /token (grant_type=token-exchange)<br/>subject_token = token-A<br/>audience = Payments API<br/>scope = payments:charge (narrow)
+    AS->>AS: Validate token-A + policy,<br/>confirm Orders may call Payments for this user
+    AS->>Orders: 200 { token-B<br/>audience = Payments API<br/>narrower scope, optional act = Orders }
+    Orders->>Pay: Call Payments API<br/>Bearer token-B (audience = Payments API)
+    Pay->>Pay: audience == Payments API ? ✓
+    Pay->>Orders: 200 OK
 ```
+
+So `token-A` (good only at Orders) is swapped for `token-B` (good only at Payments, and scoped down to just charging). Orders never gets a token that can do everything; Payments only ever sees a token meant for it.
 
 ## The two patterns
 
