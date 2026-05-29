@@ -8,7 +8,7 @@ The MCP server's auth code is mostly **token validation**: a few hundred lines, 
 
 Here is the concrete minimum-bar checklist.
 
-> **Hands-on lab.** The [`app`](https://github.com/kubiosec-ai/JWT_tooling/tree/main/app) demo is a runnable version of this page: a [FastMCP](https://gofastmcp.com) server configured as a resource server with `JWTVerifier`, validating a bearer JWT on signature + issuer + audience + expiry before serving a tool, plus a script to mint a token and a client that calls it. It reads the user from the `sub` claim (not `client_id`, per [pitfall 10 on the next page](07-pitfalls.md)).
+> **Hands-on lab.** The [`app`](https://github.com/kubiosec-agentic/JWT_tooling/tree/main/app) demo is a runnable version of this page: a [FastMCP](https://gofastmcp.com) server configured as a resource server with `JWTVerifier`, validating a bearer JWT on signature + issuer + audience + expiry before serving a tool, plus a script to mint a token and a client that calls it. It reads the user from the `sub` claim (not `client_id`, per [pitfall 10 on the next page](07-pitfalls.md)).
 
 ## Server-side responsibilities
 

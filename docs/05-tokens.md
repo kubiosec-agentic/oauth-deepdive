@@ -111,7 +111,7 @@ JWT access tokens let the RS validate the token without a round-trip to the AS, 
 
 **JWT access tokens are not ID tokens.** Some implementations conflate them. Notice the `typ` field in the header above is `at+jwt`, which is what signals "this is an access token, not an id_token." It's a tiny but load-bearing detail: a server that skips this check can be tricked into accepting an ID token (meant only for the app) where an access token was expected.
 
-> **Hands-on lab.** To see this in OpenSSL and bash, the [`jwt_cli`](https://github.com/kubiosec-ai/JWT_tooling/tree/main/jwt_cli) lab generates an RS256 JWT, prints the three parts, verifies the signature, and publishes the public key as a JWKS. The Python validator there is secure by default (allowlisted `jku`, RS256 pinned, expiry checked) with an explicit `--insecure-trust-jku` flag that demonstrates the JKU-injection forgery covered in the security chapter.
+> **Hands-on lab.** To see this in OpenSSL and bash, the [`jwt_cli`](https://github.com/kubiosec-agentic/JWT_tooling/tree/main/jwt_cli) lab generates an RS256 JWT, prints the three parts, verifies the signature, and publishes the public key as a JWKS. The Python validator there is secure by default (allowlisted `jku`, RS256 pinned, expiry checked) with an explicit `--insecure-trust-jku` flag that demonstrates the JKU-injection forgery covered in the security chapter.
 
 ## Token introspection (RFC 7662)
 
