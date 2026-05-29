@@ -155,4 +155,4 @@ Use when you need real-time revocation and centralised policy. Cost: latency, an
 
 ---
 
-← [CIBA](flows/ciba.md) · ↑ [README](../README.md) · → Next: [RFC reference](06-rfc-reference.md)
+← [CIBA](04-flows/ciba.md) · ↑ [README](../README.md) · → Next: [RFC reference](06-rfc-reference.md)

@@ -4,13 +4,13 @@
 >
 > **Why it matters:** This is the heart of the guide for anyone building AI assistants. The pages here show exactly how that access is set up and checked.
 
-The **Model Context Protocol (MCP)** is an open protocol, originally from Anthropic, that defines how AI applications (clients — e.g., Claude Desktop, an IDE plugin, an agent) connect to external tools and data sources (servers — e.g., a GitHub MCP server, a database MCP server).
+The **Model Context Protocol (MCP)** is an open protocol, originally from Anthropic, that defines how AI applications (clients, e.g., Claude Desktop, an IDE plugin, an agent) connect to external tools and data sources (servers, e.g., a GitHub MCP server, a database MCP server).
 
-MCP servers expose **tools**, **resources**, and **prompts**; clients negotiate capabilities and invoke them over JSON-RPC carried by stdio, SSE, or **Streamable HTTP**. As soon as MCP servers started exposing real user data over a network transport, the question *"how do we authorize this?"* became unavoidable — and **OAuth 2.1** is the answer the MCP working group converged on.
+MCP servers expose **tools**, **resources**, and **prompts**; clients negotiate capabilities and invoke them over JSON-RPC carried by stdio, SSE, or **Streamable HTTP**. As soon as MCP servers started exposing real user data over a network transport, the question *"how do we authorize this?"* became unavoidable, and **OAuth 2.1** is the answer the MCP working group converged on.
 
 This chapter is the long-form treatment of the MCP authorization profile.
 
-> **New to this?** Start with the [plain-English walkthrough](walkthrough.md) — the whole flow told as a simple story (one person, one assistant, one email tool) before any technical detail. Then come back here for the formal pages.
+> **New to this?** Start with the [plain-English walkthrough](walkthrough.md): the whole flow told as a simple story (one person, one assistant, one email tool) before any technical detail. Then come back here for the formal pages.
 
 ## The pages
 
@@ -27,16 +27,16 @@ flowchart TB
     H --> I[9. Agent/MCP end-to-end<br/>spec-cited deep dive]
 ```
 
-- **[A plain-English walkthrough](walkthrough.md)** — start here: the whole flow as a simple story, no protocol detail
-- 10.1 [Architecture and role split](01-architecture.md) — why the MCP server is *only* a resource server
-- 10.2 [The discovery chain](02-discovery-chain.md) — how RFC 9728 and RFC 8414 stitch together
-- 10.3 [Dynamic Client Registration in MCP](03-dynamic-client-registration.md) — RFC 7591 in practice
-- 10.4 [Resource indicators — RFC 8707 and audience binding](04-resource-indicators.md) — the confused-deputy story
-- 10.5 [The full handshake, end to end](05-handshake.md) — discovery → register → authorize → call
-- 10.6 [What an MCP server actually has to implement](06-server-implementation.md) — checklist
-- 10.7 [Common MCP-auth pitfalls](07-pitfalls.md) — what goes wrong in the wild
-- 10.8 [Beyond bearer — DPoP and Token Exchange for agents](08-beyond-bearer.md) — research-leaning
-- 10.9 [The Agent / MCP pattern — OAuth 2.1 end to end](09-agent-pattern-end-to-end.md) — the comprehensive, spec-cited walkthrough
+- **[A plain-English walkthrough](walkthrough.md)**: start here: the whole flow as a simple story, no protocol detail
+- 10.1 [Architecture and role split](01-architecture.md): why the MCP server is *only* a resource server
+- 10.2 [The discovery chain](02-discovery-chain.md): how RFC 9728 and RFC 8414 stitch together
+- 10.3 [Dynamic Client Registration in MCP](03-dynamic-client-registration.md): RFC 7591 in practice
+- 10.4 [Resource indicators, RFC 8707 and audience binding](04-resource-indicators.md), the confused-deputy story
+- 10.5 [The full handshake, end to end](05-handshake.md): discovery → register → authorize → call
+- 10.6 [What an MCP server actually has to implement](06-server-implementation.md): checklist
+- 10.7 [Common MCP-auth pitfalls](07-pitfalls.md): what goes wrong in the wild
+- 10.8 [Beyond bearer, DPoP and Token Exchange for agents](08-beyond-bearer.md), research-leaning
+- 10.9 [The Agent / MCP pattern, OAuth 2.1 end to end](09-agent-pattern-end-to-end.md), the comprehensive, spec-cited walkthrough
 
 ## The headline
 

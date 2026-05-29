@@ -33,7 +33,7 @@ flowchart TD
 
 **Building anything that involves a human and a browser?** Authorization Code + PKCE. Full stop. Doesn't matter if your client is a server-side web app, a SPA, a mobile app, or a desktop CLI. Always.
 
-**No human in the loop?** Client Credentials, OR — if you can avoid long-lived client secrets — JWT Bearer (workload identity federation).
+**No human in the loop?** Client Credentials, OR, if you can avoid long-lived client secrets, JWT Bearer (workload identity federation).
 
 **Input-constrained device?** Device Authorization Grant. The TV-screen pattern.
 
@@ -65,7 +65,7 @@ flowchart LR
 
 ## The pages
 
-- 4.1 [Authorization Code (+ PKCE)](authorization-code-pkce.md) — the default
+- 4.1 [Authorization Code (+ PKCE)](authorization-code-pkce.md): the default
 - 4.2 [Implicit (deprecated)](implicit.md)
 - 4.3 [Resource Owner Password Credentials (deprecated)](password.md)
 - 4.4 [Client Credentials](client-credentials.md)
@@ -74,7 +74,7 @@ flowchart LR
 - 4.7 [JWT Bearer assertion grant (RFC 7523)](jwt-bearer.md)
 - 4.8 [SAML 2.0 Bearer assertion grant (RFC 7522)](saml-bearer.md)
 - 4.9 [Token Exchange (RFC 8693)](token-exchange.md)
-- 4.10 [CIBA — Client-Initiated Backchannel Authentication](ciba.md)
+- 4.10 [CIBA: Client-Initiated Backchannel Authentication](ciba.md)
 
 ---
 

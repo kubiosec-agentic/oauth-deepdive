@@ -1,6 +1,6 @@
 # 4.4 Client Credentials
 
-> **In one line:** How one program talks to another with no person involved — a service proving who it is.
+> **In one line:** How one program talks to another with no person involved: a service proving who it is.
 >
 > **Why it matters:** Common for background jobs and automation. The big trap, covered here, is accidentally using it to act for a user it cannot really represent.
 
@@ -46,11 +46,11 @@ Content-Type: application/json
 }
 ```
 
-There is no refresh token here — the credentials *are* the refresh mechanism. The client simply re-hits `/token` when its token nears expiry.
+There is no refresh token here: the credentials *are* the refresh mechanism. The client simply re-hits `/token` when its token nears expiry.
 
 ## Practical guidance
 
-**Never use Client Credentials to "stand in for" a user.** The token has no `sub` claim (or has `sub == client_id`), no user context — using it to read user data is a guaranteed authorization-bypass bug. If your AI agent uses a Client Credentials token to read mailbox data on behalf of a user, your audit log will not be able to distinguish the user from the agent and any human attacker who has compromised the service.
+**Never use Client Credentials to "stand in for" a user.** The token has no `sub` claim (or has `sub == client_id`), no user context: using it to read user data is a guaranteed authorization-bypass bug. If your AI agent uses a Client Credentials token to read mailbox data on behalf of a user, your audit log will not be able to distinguish the user from the agent and any human attacker who has compromised the service.
 
 **For machine identities, prefer workload identity federation** + [`urn:ietf:params:oauth:grant-type:jwt-bearer`](jwt-bearer.md) over long-lived `client_secret` values. Examples: GitHub Actions OIDC → cloud, Kubernetes ServiceAccount → cloud, SPIFFE/SPIRE → API.
 

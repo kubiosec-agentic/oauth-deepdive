@@ -1,6 +1,6 @@
 # 7. OAuth 2.1 — what consolidated, what died
 
-> **In one line:** The latest tidy-up of the standard — it removes the unsafe old options and makes the safe practices the default.
+> **In one line:** The latest tidy-up of the standard: it removes the unsafe old options and makes the safe practices the default.
 >
 > **Why it matters:** If you are building something new, this is the version to follow. This page lists what changed and what is now off-limits.
 
@@ -30,7 +30,7 @@ flowchart TB
 
 ## Now mandatory
 
-- **PKCE for all clients** using the authorization code flow — confidential and public alike. (RFC 6749 made it optional; RFC 9700 made it BCP; 2.1 makes it normative.)
+- **PKCE for all clients** using the authorization code flow: confidential and public alike. (RFC 6749 made it optional; RFC 9700 made it BCP; 2.1 makes it normative.)
 - **Exact-string redirect-URI matching.** No wildcards, no prefix matching, no `localhost`-special-casing.
 - **HTTPS** for all endpoints. Always was best practice; now spec.
 - **No password grant.**
@@ -49,7 +49,7 @@ flowchart TB
 
 ## What this means practically
 
-**If you're implementing OAuth today, target OAuth 2.1 and you will be on the right side of every security review for the next decade.** The draft is not yet a Standards-Track RFC, but its substance is already incorporated in major frameworks (Spring Authorization Server, Keycloak, Auth0, Entra, etc.), and the FAPI 2.0 and [MCP authorization](mcp/README.md) profiles both reference it normatively.
+**If you're implementing OAuth today, target OAuth 2.1 and you will be on the right side of every security review for the next decade.** The draft is not yet a Standards-Track RFC, but its substance is already incorporated in major frameworks (Spring Authorization Server, Keycloak, Auth0, Entra, etc.), and the FAPI 2.0 and [MCP authorization](10-mcp/README.md) profiles both reference it normatively.
 
 ## Migrating from OAuth 2.0
 

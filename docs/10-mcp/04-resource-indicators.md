@@ -110,13 +110,13 @@ flowchart TD
     P5 -->|yes| OK[Process request]
 ```
 
-The order matters. Validate `iss` *before* using the token's claims to look anything up — a token with a forged `iss` can't be allowed to direct the validation to attacker-controlled JWKS.
+The order matters. Validate `iss` *before* using the token's claims to look anything up: a token with a forged `iss` can't be allowed to direct the validation to attacker-controlled JWKS.
 
 ## Why this is non-negotiable in the MCP spec
 
-Most OAuth deployments historically had one resource server per AS, so audience binding was less urgent — `aud` was just the API's name and any token for that AS was implicitly for that API. The MCP ecosystem has the **opposite** topology: many MCP servers, one (or a few) AS per user. Without RFC 8707 + strict audience validation, a single compromised MCP server's tokens grant access to *every* MCP server the user has connected.
+Most OAuth deployments historically had one resource server per AS, so audience binding was less urgent: `aud` was just the API's name and any token for that AS was implicitly for that API. The MCP ecosystem has the **opposite** topology: many MCP servers, one (or a few) AS per user. Without RFC 8707 + strict audience validation, a single compromised MCP server's tokens grant access to *every* MCP server the user has connected.
 
-The 2025-11-25 MCP spec tightened the language around resource-parameter handling. It is now **REQUIRED** on token requests; servers **MUST** reject tokens with a non-matching `aud`. Some ASes (notably some early Entra ID configurations) emit tokens without a tight `aud` by default — these need explicit policy configuration to be MCP-conformant.
+The 2025-11-25 MCP spec tightened the language around resource-parameter handling. It is now **REQUIRED** on token requests; servers **MUST** reject tokens with a non-matching `aud`. Some ASes (notably some early Entra ID configurations) emit tokens without a tight `aud` by default: these need explicit policy configuration to be MCP-conformant.
 
 ---
 

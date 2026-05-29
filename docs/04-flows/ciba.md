@@ -1,6 +1,6 @@
 # 4.10 CIBA — Client-Initiated Backchannel Authentication
 
-> **In one line:** A way to start a sign-in on one device and approve it on another — for example, a call-centre agent starts it and you approve on your phone.
+> **In one line:** A way to start a sign-in on one device and approve it on another, for example, a call-centre agent starts it and you approve on your phone.
 >
 > **Why it matters:** It is built for cases where the person approving is not sitting at the device making the request. Useful for high-trust confirmations.
 
@@ -29,7 +29,7 @@ sequenceDiagram
     end
 ```
 
-The client initiates auth *without* the user being at the same device — the AS pushes a notification to the user's phone, the user approves, and the client polls (or receives a ping) at `/token`.
+The client initiates auth *without* the user being at the same device: the AS pushes a notification to the user's phone, the user approves, and the client polls (or receives a ping) at `/token`.
 
 ## Where this gets used
 

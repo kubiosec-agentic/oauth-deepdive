@@ -2,7 +2,7 @@
 
 > **In one line:** How a service that already holds your access can trade it for a more limited pass to call another service on your behalf.
 >
-> **Why it matters:** It is how to give each downstream step only the access it needs, instead of one all-powerful pass — important once AI assistants start chaining tools together.
+> **Why it matters:** It is how to give each downstream step only the access it needs, instead of one all-powerful pass: important once AI assistants start chaining tools together.
 
 Trade one token for another. The grant type is `urn:ietf:params:oauth:grant-type:token-exchange`. Two patterns dominate.
 
@@ -26,7 +26,7 @@ sequenceDiagram
 
 **Impersonation:** the service holds the user's token and exchanges it for a narrower-scoped token to call a downstream service. The downstream sees the original user as `sub`. The act of impersonation is not visible to the downstream.
 
-**Delegation:** the new token carries an `act` (actor) claim identifying the service acting on behalf of the user — auditable, distinguishable from direct user access. The downstream can apply different policy to delegated calls (e.g., refuse certain operations when an agent is the actor).
+**Delegation:** the new token carries an `act` (actor) claim identifying the service acting on behalf of the user: auditable, distinguishable from direct user access. The downstream can apply different policy to delegated calls (e.g., refuse certain operations when an agent is the actor).
 
 ```mermaid
 flowchart LR
@@ -62,7 +62,7 @@ An agent that needs to call N tools on a user's behalf has two choices:
 
 Option 1 is a confused-deputy waiting to happen: every tool sees a token that can do everything, and any one tool's compromise gives full account access. Option 2 limits blast radius per tool and produces audit trails that name the agent (via `act`) on every call.
 
-The MCP ecosystem doesn't yet mandate Token Exchange, but enterprise MCP deployments increasingly use this pattern — see [Beyond bearer](../mcp/08-beyond-bearer.md).
+The MCP ecosystem doesn't yet mandate Token Exchange, but enterprise MCP deployments increasingly use this pattern: see [Beyond bearer](../10-mcp/08-beyond-bearer.md).
 
 ---
 

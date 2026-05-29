@@ -49,7 +49,7 @@ Decoded, the assertion JWT typically looks like:
 }
 ```
 
-The JWT proves the caller's identity via a key the AS already trusts (often via an OIDC-discoverable JWKS — this is how AWS IAM Roles for Service Accounts, GitHub Actions OIDC, and most CI→Cloud federations work). Replaces long-lived shared secrets with short-lived, audience-bound assertions.
+The JWT proves the caller's identity via a key the AS already trusts (often via an OIDC-discoverable JWKS: this is how AWS IAM Roles for Service Accounts, GitHub Actions OIDC, and most CI→Cloud federations work). Replaces long-lived shared secrets with short-lived, audience-bound assertions.
 
 ## Why this matters for modern infrastructure
 

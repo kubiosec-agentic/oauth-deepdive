@@ -11,7 +11,7 @@ The same pattern as [JWT Bearer](jwt-bearer.md), but the assertion is a SAML 2.0
 - Enterprise bridges between legacy SAML SSO IdPs and modern OAuth-based APIs.
 - Tenant migrations where the SAML investment is sunk and OAuth-side APIs are new.
 
-New systems should prefer JWT bearer — SAML XML signatures are an attack surface (XML signature wrapping has bitten many implementations historically).
+New systems should prefer JWT bearer: SAML XML signatures are an attack surface (XML signature wrapping has bitten many implementations historically).
 
 ## HTTP
 

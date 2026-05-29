@@ -2,13 +2,13 @@
 
 > **In one line:** How a brand-new app introduces itself to the login service automatically, with no human setting it up first.
 >
-> **Why it matters:** Without it, someone would have to manually register every app-and-tool combination in advance — which would never scale to a whole ecosystem.
+> **Why it matters:** Without it, someone would have to manually register every app-and-tool combination in advance, which would never scale to a whole ecosystem.
 
-> **Update for 2025-11-25 spec.** DCR is no longer the *preferred* registration mechanism. The current MCP spec positions [**Client ID Metadata Documents (CIMD)**](09-agent-pattern-end-to-end.md#1094-client-registration--three-paths-in-priority-order) as the recommended approach; DCR is kept "for backwards compatibility or specific requirements." The full priority order (pre-registration → CIMD → DCR → user-prompt) is covered in detail on the [Agent / MCP end-to-end](09-agent-pattern-end-to-end.md) page. This page still describes DCR accurately — but new MCP implementations should reach for CIMD first.
+> **Update for 2025-11-25 spec.** DCR is no longer the *preferred* registration mechanism. The current MCP spec positions [**Client ID Metadata Documents (CIMD)**](09-agent-pattern-end-to-end.md#1094-client-registration--three-paths-in-priority-order) as the recommended approach; DCR is kept "for backwards compatibility or specific requirements." The full priority order (pre-registration → CIMD → DCR → user-prompt) is covered in detail on the [Agent / MCP end-to-end](09-agent-pattern-end-to-end.md) page. This page still describes DCR accurately, but new MCP implementations should reach for CIMD first.
 
 The catch in any MCP deployment: **MCP clients are unknown to the AS until they try to connect**. There is no human in the loop to provision an OAuth app for "Claude Desktop talking to your GitHub MCP server" before the conversation starts. The user expects to plug in a URL and have it work.
 
-**RFC 7591 — Dynamic Client Registration** solves this.
+**RFC 7591: Dynamic Client Registration** solves this.
 
 ## The sequence
 
@@ -55,11 +55,11 @@ Content-Type: application/json
 }
 ```
 
-The MCP spec says clients **MAY** support DCR — it's optional but expected for most ecosystem deployments. Without DCR you're stuck pre-provisioning a client for every (user, MCP server, AS) combination, which doesn't scale.
+The MCP spec says clients **MAY** support DCR: it's optional but expected for most ecosystem deployments. Without DCR you're stuck pre-provisioning a client for every (user, MCP server, AS) combination, which doesn't scale.
 
 ## When DCR isn't open
 
-Enterprise IdPs typically don't allow open DCR — anyone POSTing valid JSON shouldn't be able to register. Two RFC 7591 mechanisms gate it:
+Enterprise IdPs typically don't allow open DCR: anyone POSTing valid JSON shouldn't be able to register. Two RFC 7591 mechanisms gate it:
 
 **Initial access token.** Admin issues a one-time bearer token that the client presents as `Authorization: Bearer …` at `/register`. The AS validates the token and applies admin-configured defaults to the resulting registration.
 
@@ -99,7 +99,7 @@ RFC 7592 (Dynamic Client Management) lets a registered client read, update, and 
 
 ## Why DCR matters specifically for MCP
 
-The MCP ecosystem assumes clients show up unannounced. A user installs an IDE plugin, types in an MCP server URL, and expects it to work. Without DCR, that experience requires an admin to provision an app in the AS console first — which immediately kills ecosystem velocity. **DCR is what turns OAuth from "configure once per app" to "configure once per AS, then plug in any client."**
+The MCP ecosystem assumes clients show up unannounced. A user installs an IDE plugin, types in an MCP server URL, and expects it to work. Without DCR, that experience requires an admin to provision an app in the AS console first, which immediately kills ecosystem velocity. **DCR is what turns OAuth from "configure once per app" to "configure once per AS, then plug in any client."**
 
 ---
 

@@ -55,10 +55,10 @@ Content-Type: application/json
 
 **Key fields:**
 
-- **`resource`** — the canonical URI of this MCP server. The client will use it as the `resource` parameter in the authorization and token requests (see [§10.4](04-resource-indicators.md)).
-- **`authorization_servers`** — the ASes the MCP server trusts. The client picks one (typically the only one, or prompts the user if more than one).
-- **`scopes_supported`** — the scopes the MCP server understands. The client uses these in the `scope=` parameter at `/authorize`.
-- **`bearer_methods_supported`** — typically `["header"]`. The MCP spec forbids `query` (which would leak tokens to logs).
+- **`resource`**: the canonical URI of this MCP server. The client will use it as the `resource` parameter in the authorization and token requests (see [§10.4](04-resource-indicators.md)).
+- **`authorization_servers`**: the ASes the MCP server trusts. The client picks one (typically the only one, or prompts the user if more than one).
+- **`scopes_supported`**: the scopes the MCP server understands. The client uses these in the `scope=` parameter at `/authorize`.
+- **`bearer_methods_supported`**, typically `["header"]`. The MCP spec forbids `query` (which would leak tokens to logs).
 
 ## Step 2 — Authorization Server Metadata (RFC 8414)
 
@@ -94,7 +94,7 @@ flowchart LR
     A[MCP server tells the client<br/>which AS to trust] --> B[AS describes itself<br/>via standard metadata] --> C[Client never hard-codes<br/>any endpoint]
 ```
 
-Nothing is hard-coded. The client ships knowing only the MCP server's URL. Everything else — AS endpoints, scopes, key material, registration endpoint — is discovered. This is what makes it possible for a generic MCP client (e.g., Claude Desktop) to talk to *any* compliant MCP server without code changes.
+Nothing is hard-coded. The client ships knowing only the MCP server's URL. Everything else, AS endpoints, scopes, key material, registration endpoint, is discovered. This is what makes it possible for a generic MCP client (e.g., Claude Desktop) to talk to *any* compliant MCP server without code changes.
 
 ## Some implementations also use OIDC discovery
 

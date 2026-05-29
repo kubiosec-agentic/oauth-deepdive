@@ -10,7 +10,7 @@ Bearer-only tokens are the MCP default in 2026. Two research-leaning patterns ar
 
 The threat model the MCP spec defends against today: token theft in transit (mitigated by TLS) and at issuance (mitigated by audience binding, PKCE). The threat it does *not* defend against: **token theft from a long-running agent's process memory**.
 
-An AI agent running for hours has its access tokens sitting in RAM (or worse, in checkpoints to disk). Any code execution in that process — an injected prompt that gets a tool to execute, a vulnerable dependency, a debug build with verbose logging — exposes the token. With bearer-only validation, that token works from anywhere.
+An AI agent running for hours has its access tokens sitting in RAM (or worse, in checkpoints to disk). Any code execution in that process, an injected prompt that gets a tool to execute, a vulnerable dependency, a debug build with verbose logging, exposes the token. With bearer-only validation, that token works from anywhere.
 
 DPoP (RFC 9449) cuts this off.
 
@@ -31,7 +31,7 @@ sequenceDiagram
     MCP->>Agent: 200 data
 ```
 
-A token stolen from the agent's memory **without the corresponding private key** is unusable elsewhere. The private key is the actual secret to protect — and it's straightforward to keep that in a TPM, secure enclave, or OS-level key store while the access token sits in process memory.
+A token stolen from the agent's memory **without the corresponding private key** is unusable elsewhere. The private key is the actual secret to protect, and it's straightforward to keep that in a TPM, secure enclave, or OS-level key store while the access token sits in process memory.
 
 The 2026-07-28 MCP release candidate touches this territory; production MCP deployments at the bank/healthcare end of the spectrum are already implementing it on top of the current spec.
 
@@ -59,13 +59,13 @@ flowchart TB
     end
 ```
 
-The agent holds one upstream token, then mints per-tool tokens via [Token Exchange (RFC 8693)](../flows/token-exchange.md). Each per-tool token has:
+The agent holds one upstream token, then mints per-tool tokens via [Token Exchange (RFC 8693)](../04-flows/token-exchange.md). Each per-tool token has:
 
 - `aud` = that tool's MCP server URI (cannot be replayed against another tool).
 - `scope` narrowed to what that tool actually needs.
-- Optionally, `act` claim identifying the agent (delegation, not impersonation) — so the downstream sees both who the user is *and* what's acting on their behalf.
+- Optionally, `act` claim identifying the agent (delegation, not impersonation), so the downstream sees both who the user is *and* what's acting on their behalf.
 
-The MCP spec doesn't mandate this yet. But it's the right pattern, and the 2026-07-28 RC has hooks to make it ergonomic — particularly around how an MCP server can advertise its required `aud` and scopes during PRM, so a fan-out coordinator can build the right token-exchange request without per-tool config.
+The MCP spec doesn't mandate this yet. But it's the right pattern, and the 2026-07-28 RC has hooks to make it ergonomic: particularly around how an MCP server can advertise its required `aud` and scopes during PRM, so a fan-out coordinator can build the right token-exchange request without per-tool config.
 
 ## Step-up authentication (RFC 9470)
 

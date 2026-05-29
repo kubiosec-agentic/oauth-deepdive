@@ -36,7 +36,7 @@ GET /authorize?response_type=token&client_id=…&redirect_uri=…&state=… HTTP
 
 - **Access tokens land in browser history**, server logs (referrer headers leak fragments in some configurations), and any extension with URL access.
 - **No code-to-token exchange** means no client authentication and (worse) no PKCE protection.
-- **No refresh tokens** were issued, so SPAs hit silent-renewal hacks via hidden iframes — themselves an attack surface and broken by modern third-party cookie defaults.
+- **No refresh tokens** were issued, so SPAs hit silent-renewal hacks via hidden iframes: themselves an attack surface and broken by modern third-party cookie defaults.
 - **Conflated authentication and access** when "OIDC implicit" was used to also return an `id_token` in the fragment, which is even worse because the id_token is then exposed to anything that sees the URL.
 
 ## The migration path

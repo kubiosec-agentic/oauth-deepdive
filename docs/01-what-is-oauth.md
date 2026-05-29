@@ -20,7 +20,7 @@ flowchart LR
     RS -->|5- validates token<br/>returns data| C
 ```
 
-The mental model that pays off: **OAuth hands the client application a stamped ticket** that says "this much, for this long, against that API." Your password stays with the login service alone — *neither* the client application *nor* the API ever sees it.
+The mental model that pays off: **OAuth hands the client application a stamped ticket** that says "this much, for this long, against that API." Your password stays with the login service alone: *neither* the client application *nor* the API ever sees it.
 
 ## What OAuth is not
 
@@ -35,7 +35,7 @@ The mental model that pays off: **OAuth hands the client application a stamped t
 Before OAuth, the standard way for "give app X access to my data on service Y" was for the user to hand over their Y password to X. This had three problems compounded:
 
 1. X now has the user's password (catastrophic if X is breached).
-2. The user can't revoke X's access without changing the password — which breaks every other app.
+2. The user can't revoke X's access without changing the password, which breaks every other app.
 3. X gets *all* of the user's privileges, not a scoped subset.
 
 OAuth replaces "give the app my password" with "let the app ask the service for a stamped ticket on my behalf, valid for a narrow purpose, revocable at any time."

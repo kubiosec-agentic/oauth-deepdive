@@ -1,6 +1,6 @@
 # 4.3 Resource Owner Password Credentials (deprecated)
 
-> **In one line:** An old method where the user typed their password straight into the app — the very thing this technology was meant to avoid.
+> **In one line:** An old method where the user typed their password straight into the app: the very thing this technology was meant to avoid.
 >
 > **Why it matters:** It has been retired for good reasons. This page explains them, so you can spot it and move away from it.
 
@@ -40,7 +40,7 @@ grant_type=password
 
 - **The whole point of OAuth was that the client never sees credentials.** This flow violated that single most important property.
 - **It normalised phishing.** Users learned to type their primary password into anything labelled "login," including untrusted apps.
-- **MFA, federation, and AS policy controls are all bypassed.** No challenge-response, no risk-based auth, no SSO — the client gets the password and tries it once.
+- **MFA, federation, and AS policy controls are all bypassed.** No challenge-response, no risk-based auth, no SSO: the client gets the password and tries it once.
 - **Migrations from legacy systems** were the original justification ("our users are already typing passwords here"), but the migration was meant to be temporary and never was.
 
 ## The migration path

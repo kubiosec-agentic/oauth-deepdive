@@ -8,13 +8,13 @@
 
 New to this topic? You don't have to read all twelve chapters to get the core idea. If you read nothing else, read these, in order:
 
-1. [What OAuth actually is (and isn't)](docs/01-what-is-oauth.md) — the one core idea.
-2. [Core concepts and vocabulary](docs/02-concepts-vocabulary.md) — the words everything else uses.
-3. [Authorization Code + PKCE](docs/flows/authorization-code-pkce.md) — the one login method you'll actually use.
-4. [Tokens, in detail](docs/05-tokens.md) — what the app receives and how it's checked.
-5. [MCP — a plain-English walkthrough](docs/mcp/walkthrough.md) — the whole AI-assistant flow told as a simple story.
+1. [What OAuth actually is (and isn't)](docs/01-what-is-oauth.md): the one core idea.
+2. [Core concepts and vocabulary](docs/02-concepts-vocabulary.md): the words everything else uses.
+3. [Authorization Code + PKCE](docs/04-flows/authorization-code-pkce.md): the one login method you'll actually use.
+4. [Tokens, in detail](docs/05-tokens.md): what the app receives and how it's checked.
+5. [MCP, a plain-English walkthrough](docs/10-mcp/walkthrough.md), the whole AI-assistant flow told as a simple story.
 
-Keep the [Glossary](docs/glossary.md) open alongside whatever you're reading — every term is defined there in one or two plain sentences.
+Keep the [Glossary](docs/glossary.md) open alongside whatever you're reading: every term is defined there in one or two plain sentences.
 
 ## How this is organised
 
@@ -36,31 +36,31 @@ flowchart LR
 
 1. [What OAuth actually is (and isn't)](docs/01-what-is-oauth.md)
 2. [Core concepts and vocabulary](docs/02-concepts-vocabulary.md)
-3. [The OAuth timeline — how we got here](docs/03-timeline.md)
+3. [The OAuth timeline: how we got here](docs/03-timeline.md)
 
 ### The flows
 
-4. [The flows — overview and decision tree](docs/flows/README.md)
-   - 4.1 [Authorization Code (+ PKCE)](docs/flows/authorization-code-pkce.md)
-   - 4.2 [Implicit (deprecated)](docs/flows/implicit.md)
-   - 4.3 [Resource Owner Password Credentials (deprecated)](docs/flows/password.md)
-   - 4.4 [Client Credentials](docs/flows/client-credentials.md)
-   - 4.5 [Refresh Token](docs/flows/refresh-token.md)
-   - 4.6 [Device Authorization Grant (RFC 8628)](docs/flows/device-grant.md)
-   - 4.7 [JWT Bearer assertion grant (RFC 7523)](docs/flows/jwt-bearer.md)
-   - 4.8 [SAML 2.0 Bearer assertion grant (RFC 7522)](docs/flows/saml-bearer.md)
-   - 4.9 [Token Exchange (RFC 8693)](docs/flows/token-exchange.md)
-   - 4.10 [CIBA — Client-Initiated Backchannel Authentication](docs/flows/ciba.md)
+4. [The flows: overview and decision tree](docs/04-flows/README.md)
+   - 4.1 [Authorization Code (+ PKCE)](docs/04-flows/authorization-code-pkce.md)
+   - 4.2 [Implicit (deprecated)](docs/04-flows/implicit.md)
+   - 4.3 [Resource Owner Password Credentials (deprecated)](docs/04-flows/password.md)
+   - 4.4 [Client Credentials](docs/04-flows/client-credentials.md)
+   - 4.5 [Refresh Token](docs/04-flows/refresh-token.md)
+   - 4.6 [Device Authorization Grant (RFC 8628)](docs/04-flows/device-grant.md)
+   - 4.7 [JWT Bearer assertion grant (RFC 7523)](docs/04-flows/jwt-bearer.md)
+   - 4.8 [SAML 2.0 Bearer assertion grant (RFC 7522)](docs/04-flows/saml-bearer.md)
+   - 4.9 [Token Exchange (RFC 8693)](docs/04-flows/token-exchange.md)
+   - 4.10 [CIBA: Client-Initiated Backchannel Authentication](docs/04-flows/ciba.md)
 
 ### Tokens and the ecosystem
 
 5. [Tokens, in detail](docs/05-tokens.md)
-6. [The OAuth ecosystem — supporting RFCs](docs/06-rfc-reference.md)
+6. [The OAuth ecosystem: supporting RFCs](docs/06-rfc-reference.md)
 
 ### OAuth 2.1 and OIDC
 
-7. [OAuth 2.1 — what consolidated, what died](docs/07-oauth-2.1.md)
-8. [OpenID Connect (OIDC) — the authentication layer](docs/08-oidc.md)
+7. [OAuth 2.1: what consolidated, what died](docs/07-oauth-2.1.md)
+8. [OpenID Connect (OIDC): the authentication layer](docs/08-oidc.md)
 
 ### Workload and agent identity
 
@@ -68,17 +68,17 @@ flowchart LR
 
 ### OAuth 2.1 for MCP — the dedicated section
 
-10. [MCP authorization — overview](docs/mcp/README.md)
-    - [A plain-English walkthrough](docs/mcp/walkthrough.md) — *start here: the whole flow as a simple story*
-    - 10.1 [Architecture and role split](docs/mcp/01-architecture.md)
-    - 10.2 [The discovery chain (RFC 9728 → RFC 8414)](docs/mcp/02-discovery-chain.md)
-    - 10.3 [Dynamic Client Registration in MCP (RFC 7591)](docs/mcp/03-dynamic-client-registration.md)
-    - 10.4 [Resource indicators — RFC 8707 and audience binding](docs/mcp/04-resource-indicators.md)
-    - 10.5 [The full handshake, end to end](docs/mcp/05-handshake.md)
-    - 10.6 [What an MCP server actually has to implement](docs/mcp/06-server-implementation.md)
-    - 10.7 [Common MCP-auth pitfalls](docs/mcp/07-pitfalls.md)
-    - 10.8 [Beyond bearer — DPoP and Token Exchange for agents](docs/mcp/08-beyond-bearer.md)
-    - 10.9 [The Agent / MCP pattern — OAuth 2.1 end to end](docs/mcp/09-agent-pattern-end-to-end.md) (spec-cited deep dive)
+10. [MCP authorization: overview](docs/10-mcp/README.md)
+    - [A plain-English walkthrough](docs/10-mcp/walkthrough.md): *start here: the whole flow as a simple story*
+    - 10.1 [Architecture and role split](docs/10-mcp/01-architecture.md)
+    - 10.2 [The discovery chain (RFC 9728 → RFC 8414)](docs/10-mcp/02-discovery-chain.md)
+    - 10.3 [Dynamic Client Registration in MCP (RFC 7591)](docs/10-mcp/03-dynamic-client-registration.md)
+    - 10.4 [Resource indicators: RFC 8707 and audience binding](docs/10-mcp/04-resource-indicators.md)
+    - 10.5 [The full handshake, end to end](docs/10-mcp/05-handshake.md)
+    - 10.6 [What an MCP server actually has to implement](docs/10-mcp/06-server-implementation.md)
+    - 10.7 [Common MCP-auth pitfalls](docs/10-mcp/07-pitfalls.md)
+    - 10.8 [Beyond bearer: DPoP and Token Exchange for agents](docs/10-mcp/08-beyond-bearer.md)
+    - 10.9 [The Agent / MCP pattern: OAuth 2.1 end to end](docs/10-mcp/09-agent-pattern-end-to-end.md) (spec-cited deep dive)
 
 ### Security and reference
 
@@ -87,7 +87,7 @@ flowchart LR
 
 ### Reference
 
-- [Glossary — plain-language definitions](docs/glossary.md) — every key term in one or two everyday sentences
+- [Glossary, plain-language definitions](docs/glossary.md), every key term in one or two everyday sentences
 
 ---
 

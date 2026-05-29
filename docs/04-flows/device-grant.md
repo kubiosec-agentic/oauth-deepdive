@@ -1,10 +1,10 @@
 # 4.6 Device Authorization Grant (RFC 8628)
 
-> **In one line:** How you sign in on a device that is awkward to type on — like a TV — by using your phone instead.
+> **In one line:** How you sign in on a device that is awkward to type on, like a TV, by using your phone instead.
 >
 > **Why it matters:** It is the pattern behind “go to this web address and enter this code.” Handy whenever a screen has no real keyboard.
 
-**Who this is for:** input-constrained devices — TVs, CLIs, IoT — that can display a code but can't reasonably host a browser-redirect flow.
+**Who this is for:** input-constrained devices (TVs, CLIs, IoT) that can display a code but can't reasonably host a browser-redirect flow.
 
 ## The sequence
 
@@ -74,7 +74,7 @@ Returns `400 authorization_pending` until the user finishes, then a normal token
 
 - **Show `verification_uri_complete` as a QR code** where possible. Users hate typing 8-character codes on a TV remote.
 - **Respect the `interval`** value. Polling faster than the AS asks gets you `slow_down` errors and possibly a temp ban.
-- **The `device_code` is sensitive** — anyone who captures it during the poll window can complete the auth. Don't log it.
+- **The `device_code` is sensitive**: anyone who captures it during the poll window can complete the auth. Don't log it.
 
 ---
 

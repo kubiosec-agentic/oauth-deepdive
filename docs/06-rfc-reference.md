@@ -33,9 +33,9 @@
 | **9700** | OAuth 2.0 Security Best Current Practice (BCP). |
 | **9728** | OAuth 2.0 Protected Resource Metadata (`/.well-known/oauth-protected-resource`). |
 
-If you have one slot in your reading list after RFC 6749, make it **RFC 9700** — it's the security state of the art compressed into one document, and it's what OAuth 2.1 is built from.
+If you have one slot in your reading list after RFC 6749, make it **RFC 9700**: it's the security state of the art compressed into one document, and it's what OAuth 2.1 is built from.
 
-For OIDC, the canonical specs are not IETF RFCs but OpenID Foundation documents — see the [OIDC chapter](08-oidc.md).
+For OIDC, the canonical specs are not IETF RFCs but OpenID Foundation documents: see the [OIDC chapter](08-oidc.md).
 
 ---
 

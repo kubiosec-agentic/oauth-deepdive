@@ -2,19 +2,19 @@
 
 > **In one line:** The complete, detailed picture of how an AI agent gets and uses access on a user’s behalf, with the exact rules cited.
 >
-> **Why it matters:** It is the deepest, most thorough page in the guide — the one to come back to when you need every detail right.
+> **Why it matters:** It is the deepest, most thorough page in the guide: the one to come back to when you need every detail right.
 
-> *This page is a 100%-spec-accurate, end-to-end walkthrough of how OAuth 2.1 authorisation works in the MCP **Agent pattern** — where an AI agent (running inside a host application) needs to invoke tools on one or more MCP servers on behalf of a human user. It draws directly from the **MCP 2025-11-25 specification (Authorization)** and the upcoming **draft revision**, both of which reference **OAuth 2.1 draft-ietf-oauth-v2-1-13** as their normative base.*
+> *This page is a 100%-spec-accurate, end-to-end walkthrough of how OAuth 2.1 authorisation works in the MCP **Agent pattern**: where an AI agent (running inside a host application) needs to invoke tools on one or more MCP servers on behalf of a human user. It draws directly from the **MCP 2025-11-25 specification (Authorization)** and the upcoming **draft revision**, both of which reference **OAuth 2.1 draft-ietf-oauth-v2-1-13** as their normative base.*
 >
 > *If you are skim-reading, jump straight to [§10.9.7 The full end-to-end sequence diagram](#1097-the-full-end-to-end-sequence-diagram).*
 
 This is the deepest treatment in the guide. Other pages set things up:
 
-- The OAuth 2.1 base mechanism — [§4.1 Authorization Code + PKCE](../flows/authorization-code-pkce.md).
-- The discovery chain at a high level — [§10.2 Discovery chain](02-discovery-chain.md).
-- Why MCP is a resource server, not its own AS — [§10.1 Architecture](01-architecture.md).
-- Why tokens must be audience-bound — [§10.4 Resource indicators](04-resource-indicators.md).
-- Forward-looking sender-constraint and Token Exchange — [§10.8 Beyond bearer](08-beyond-bearer.md).
+- The OAuth 2.1 base mechanism: [§4.1 Authorization Code + PKCE](../04-flows/authorization-code-pkce.md).
+- The discovery chain at a high level: [§10.2 Discovery chain](02-discovery-chain.md).
+- Why MCP is a resource server, not its own AS: [§10.1 Architecture](01-architecture.md).
+- Why tokens must be audience-bound: [§10.4 Resource indicators](04-resource-indicators.md).
+- Forward-looking sender-constraint and Token Exchange: [§10.8 Beyond bearer](08-beyond-bearer.md).
 
 This page consolidates those into one continuous story, with explicit focus on what changes when the *caller* is an **agent**, not a human at a browser.
 
@@ -22,7 +22,7 @@ This page consolidates those into one continuous story, with explicit focus on w
 
 ## 10.9.1 The MCP architecture, in one paragraph
 
-MCP defines a **host → client → server** topology, not the simpler client → server of most OAuth deployments. The **host** (Claude Desktop, an IDE, an agent runtime) is the trust boundary and the OAuth client identity. Inside the host, the **agent** (the LLM with tool-use logic) decides which tools to call. The host owns one **MCP client per server** — each client maintains a stateful JSON-RPC session and a per-server audience-bound access token. The **MCP server** is a pure OAuth 2.1 resource server, validating tokens and exposing tools, resources, and prompts.
+MCP defines a **host → client → server** topology, not the simpler client → server of most OAuth deployments. The **host** (Claude Desktop, an IDE, an agent runtime) is the trust boundary and the OAuth client identity. Inside the host, the **agent** (the LLM with tool-use logic) decides which tools to call. The host owns one **MCP client per server**, each client maintains a stateful JSON-RPC session and a per-server audience-bound access token. The **MCP server** is a pure OAuth 2.1 resource server, validating tokens and exposing tools, resources, and prompts.
 
 ```mermaid
 flowchart TB
@@ -54,7 +54,7 @@ flowchart TB
 Three things to pin down from this:
 
 1. **The agent is not the OAuth client.** The host is. The agent runs inside the host, uses MCP clients (which the host instantiates) to reach MCP servers, but never directly holds an OAuth registration. This matters because OAuth client identity (`client_id`) attaches to the *application*, not the in-application LLM logic.
-2. **One token per MCP server.** The host's OAuth client may obtain *N* tokens — one for each MCP server the agent calls. Each token's `aud` claim binds it to exactly one server, so the same machinery cannot be reused as cross-server replay. This is RFC 8707 in action.
+2. **One token per MCP server.** The host's OAuth client may obtain *N* tokens: one for each MCP server the agent calls. Each token's `aud` claim binds it to exactly one server, so the same machinery cannot be reused as cross-server replay. This is RFC 8707 in action.
 3. **The agent's identity is a separate concept** from the OAuth client identity. In the simple pattern, the agent is implicit (the AS sees only `(client_id, sub=user)` and the agent's behaviour shows up in audit logs as "the client did X"). In the [Token Exchange pattern](#1098-the-agent-pattern-token-exchange-and-the-act-claim), the agent is explicitly encoded in the token's `act` claim.
 
 ---
@@ -63,15 +63,15 @@ Three things to pin down from this:
 
 This list is verbatim from [the 2025-11-25 spec](https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization). The MUST/SHOULD/MAY come from the spec text:
 
-1. **Authorization servers MUST implement OAuth 2.1** — referenced as draft-ietf-oauth-v2-1-13.
-2. **Authorization servers and MCP clients SHOULD support [OAuth Client ID Metadata Documents (CIMD)](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-client-id-metadata-document-00)** — this is the **preferred** registration mechanism going forward.
-3. **Authorization servers and MCP clients MAY support OAuth 2.0 Dynamic Client Registration (RFC 7591)** — kept "for backwards compatibility or specific requirements."
+1. **Authorization servers MUST implement OAuth 2.1**: referenced as draft-ietf-oauth-v2-1-13.
+2. **Authorization servers and MCP clients SHOULD support [OAuth Client ID Metadata Documents (CIMD)](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-client-id-metadata-document-00)**: this is the **preferred** registration mechanism going forward.
+3. **Authorization servers and MCP clients MAY support OAuth 2.0 Dynamic Client Registration (RFC 7591)**: kept "for backwards compatibility or specific requirements."
 4. **MCP servers MUST implement [Protected Resource Metadata (RFC 9728)](https://datatracker.ietf.org/doc/html/rfc9728)** and **MCP clients MUST use it for authorization-server discovery.**
 5. **MCP authorization servers MUST provide at least one of**: OAuth 2.0 Authorization Server Metadata (RFC 8414) **or** OpenID Connect Discovery 1.0. **MCP clients MUST support both** discovery mechanisms.
-6. **MCP clients MUST implement [Resource Indicators (RFC 8707)](https://www.rfc-editor.org/rfc/rfc8707.html)** — the `resource` parameter MUST be present on both the authorization request and the token request, regardless of whether the AS supports it.
+6. **MCP clients MUST implement [Resource Indicators (RFC 8707)](https://www.rfc-editor.org/rfc/rfc8707.html)**: the `resource` parameter MUST be present on both the authorization request and the token request, regardless of whether the AS supports it.
 7. **MCP servers MUST validate the audience** of incoming tokens against their own canonical URI.
 8. **PKCE is required.** Clients MUST verify AS support for PKCE via `code_challenge_methods_supported` in the AS metadata. If absent, the client **MUST refuse to proceed**. `S256` is required when technically capable.
-9. **Token passthrough is explicitly forbidden.** If the MCP server itself calls an upstream API, it MUST obtain its own separate access token from that upstream's AS — it MUST NOT forward the token it received from the MCP client.
+9. **Token passthrough is explicitly forbidden.** If the MCP server itself calls an upstream API, it MUST obtain its own separate access token from that upstream's AS: it MUST NOT forward the token it received from the MCP client.
 10. **STDIO transport SHOULD NOT use this spec.** STDIO-transport MCP servers get credentials from the environment. The OAuth profile applies to HTTP-based transports (Streamable HTTP, SSE).
 
 ---
@@ -104,7 +104,7 @@ sequenceDiagram
     Note over H: Verify code_challenge_methods_supported. If absent the client MUST refuse to proceed
 ```
 
-> **Note on the diagram above:** the client's decision when multiple `authorization_servers` are listed in the PRM document is governed by [RFC 9728 Section 7.6 — Authorization Servers](https://datatracker.ietf.org/doc/html/rfc9728#name-authorization-servers). The MCP spec defers selection logic to the client per that section.
+> **Note on the diagram above:** the client's decision when multiple `authorization_servers` are listed in the PRM document is governed by [RFC 9728 Section 7.6: Authorization Servers](https://datatracker.ietf.org/doc/html/rfc9728#name-authorization-servers). The MCP spec defers selection logic to the client per that section.
 
 Two new wire-level details that the 2025-11-25 spec tightened:
 
@@ -156,7 +156,7 @@ HTTP/1.1 200 OK
 }
 ```
 
-`client_id_metadata_document_supported: true` is how the AS advertises that it supports CIMD — see next section.
+`client_id_metadata_document_supported: true` is how the AS advertises that it supports CIMD: see next section.
 
 ---
 
@@ -182,9 +182,9 @@ The spec adds a subtle but important constraint in the **draft revision**: pre-r
 
 ### Path 2 — Client ID Metadata Documents (CIMD) — the new preferred path
 
-CIMD is defined in [draft-ietf-oauth-client-id-metadata-document-00](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-client-id-metadata-document-00). It's the most significant change to MCP authorization since the role split — and the spec adopted it as the **preferred** registration mechanism specifically because it fits the MCP ecosystem's "clients show up unannounced" model better than DCR.
+CIMD is defined in [draft-ietf-oauth-client-id-metadata-document-00](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-client-id-metadata-document-00). It's the most significant change to MCP authorization since the role split, and the spec adopted it as the **preferred** registration mechanism specifically because it fits the MCP ecosystem's "clients show up unannounced" model better than DCR.
 
-**The idea:** the client hosts a JSON metadata document at an HTTPS URL, and *that URL itself is the `client_id`*. There's no registration step at all — the AS fetches the metadata on demand the first time it sees the URL as a `client_id`.
+**The idea:** the client hosts a JSON metadata document at an HTTPS URL, and *that URL itself is the `client_id`*. There's no registration step at all: the AS fetches the metadata on demand the first time it sees the URL as a `client_id`.
 
 ```mermaid
 sequenceDiagram
@@ -223,9 +223,9 @@ Example CIMD document (from the spec):
 **Why this matters for MCP specifically:**
 
 - **No registration roundtrip.** Skip the `POST /register` step entirely.
-- **Portable across ASes.** The same `client_id` URL works at every CIMD-supporting AS — no need to re-register when an MCP server's AS changes.
+- **Portable across ASes.** The same `client_id` URL works at every CIMD-supporting AS: no need to re-register when an MCP server's AS changes.
 - **No persistent state for the client.** The host doesn't need to remember per-AS `client_id` values; the URL is the identity.
-- **The user sees a meaningful client name.** The metadata document's `client_name` and `logo_uri` are what the consent screen displays — phishing-resistant because the AS validates the document at the URL claimed.
+- **The user sees a meaningful client name.** The metadata document's `client_name` and `logo_uri` are what the consent screen displays: phishing-resistant because the AS validates the document at the URL claimed.
 
 **Security considerations:**
 
@@ -263,7 +263,7 @@ HTTP/1.1 201 Created
 }
 ```
 
-The **draft revision** adds a constraint not in the original RFC 7591: clients SHOULD specify `application_type` ("native" for desktop/CLI/loopback redirects, "web" for remote browser apps). OIDC-aware ASes enforce different redirect-URI rules depending on this — omitting it defaults to "web", which can break native-style redirects.
+The **draft revision** adds a constraint not in the original RFC 7591: clients SHOULD specify `application_type` ("native" for desktop/CLI/loopback redirects, "web" for remote browser apps). OIDC-aware ASes enforce different redirect-URI rules depending on this: omitting it defaults to "web", which can break native-style redirects.
 
 ### Path 4 — Prompt the user
 
@@ -284,12 +284,12 @@ Skipping a level only if the AS doesn't support it.
 
 ## 10.9.5 The authorization step — same OAuth 2.1, MCP-specific parameters
 
-This is the *user-at-AS* part of the flow — see [§2 Vocabulary](../02-concepts-vocabulary.md#the-authorization-step--where-the-user-comes-in) for the general concept. MCP's specific requirements layered on top:
+This is the *user-at-AS* part of the flow: see [§2 Vocabulary](../02-concepts-vocabulary.md#the-authorization-step--where-the-user-comes-in) for the general concept. MCP's specific requirements layered on top:
 
 - **PKCE with `S256` is mandatory.** The host MUST generate `code_verifier` + `code_challenge`, send the challenge at `/authorize`, send the verifier at `/token`. Client MUST refuse to proceed if the AS metadata doesn't advertise PKCE support.
 - **`resource` parameter (RFC 8707) on BOTH `/authorize` AND `/token`.** Identifies the canonical URI of the MCP server. MUST be sent regardless of whether the AS appears to support it.
-- **`state` parameter** — required for CSRF protection on the browser leg.
-- **Scope set** — initially taken from the `WWW-Authenticate: ... scope="..."` challenge, or from `scopes_supported` in the PRM document.
+- **`state` parameter**: required for CSRF protection on the browser leg.
+- **Scope set**: initially taken from the `WWW-Authenticate: ... scope="..."` challenge, or from `scopes_supported` in the PRM document.
 
 The wire-level authorization request:
 
@@ -368,7 +368,7 @@ After the token is issued, every MCP request from the host carries it as a Beare
 - Tokens **MUST NOT** appear in URL query strings.
 - The MCP server **MUST** validate on every request: signature, `iss`, `aud`, `exp`, scope.
 - The MCP server **MUST NOT** accept tokens with the wrong audience.
-- The MCP server **MUST NOT** pass through the token to an upstream API — if it needs upstream access, it acts as a *separate* OAuth client at the upstream's AS and obtains its own token.
+- The MCP server **MUST NOT** pass through the token to an upstream API: if it needs upstream access, it acts as a *separate* OAuth client at the upstream's AS and obtains its own token.
 
 ```mermaid
 sequenceDiagram
@@ -402,7 +402,7 @@ sequenceDiagram
 
 ### Step-up authorization
 
-When the agent attempts an operation that needs a scope it doesn't currently hold, the server returns 403 with the additional scope listed. The host MUST then re-run the authorization step requesting the *union* of currently held scopes and newly challenged scopes (so previously granted permissions aren't lost). The draft revision is explicit that **scope accumulation is a client-side responsibility** — the server emits per-operation challenges; the client unions them.
+When the agent attempts an operation that needs a scope it doesn't currently hold, the server returns 403 with the additional scope listed. The host MUST then re-run the authorization step requesting the *union* of currently held scopes and newly challenged scopes (so previously granted permissions aren't lost). The draft revision is explicit that **scope accumulation is a client-side responsibility**: the server emits per-operation challenges; the client unions them.
 
 ```http
 HTTP/1.1 403 Forbidden
@@ -494,7 +494,7 @@ sequenceDiagram
 A few things to notice in the diagram that distinguish the agent pattern:
 
 - **The agent never directly touches the AS or the MCP server.** It expresses intent ("read my unread mail"), the host turns that into protocol activity. The agent doesn't even know `client_id`, `code_verifier`, etc. exist.
-- **The host owns the OAuth state.** State, PKCE verifier, refresh token, token cache — all in the host. The agent is a consumer of "yes/no, here's the data" results.
+- **The host owns the OAuth state.** State, PKCE verifier, refresh token, token cache: all in the host. The agent is a consumer of "yes/no, here's the data" results.
 - **The browser appears once**, only at the user-consent step. Everything after the initial authorization is back-channel between host and AS, host and MCP server.
 
 ---
@@ -503,11 +503,11 @@ A few things to notice in the diagram that distinguish the agent pattern:
 
 The preceding section covered the *base* case: one user, one host, one MCP server. The agent pattern gets interesting when:
 
-1. The agent calls **multiple MCP servers** (the typical case — Claude Desktop with five MCP servers connected).
+1. The agent calls **multiple MCP servers** (the typical case: Claude Desktop with five MCP servers connected).
 2. We want **the agent to be a first-class identity in the audit trail**, distinguishable from the user.
-3. We want **per-tool scope narrowing** — each MCP call gets a token scoped exactly to what that call needs.
+3. We want **per-tool scope narrowing**, each MCP call gets a token scoped exactly to what that call needs.
 
-The OAuth mechanism for all three is **[Token Exchange (RFC 8693)](../flows/token-exchange.md)**.
+The OAuth mechanism for all three is **[Token Exchange (RFC 8693)](../04-flows/token-exchange.md)**.
 
 ### Multi-server fan-out — the naive vs proper pattern
 
@@ -572,7 +572,7 @@ The decoded resulting token has both identities:
 }
 ```
 
-**The `act` claim is the entire point.** It says: *"The subject identity is user-7b8c (the human). The actual acting party is the expense-report agent."* MCP servers, RSes, and audit-log consumers can now answer the question "what did the agent do" separately from "what did the user do" — even though the agent acted strictly within the user's authority.
+**The `act` claim is the entire point.** It says: *"The subject identity is user-7b8c (the human). The actual acting party is the expense-report agent."* MCP servers, RSes, and audit-log consumers can now answer the question "what did the agent do" separately from "what did the user do": even though the agent acted strictly within the user's authority.
 
 ### Multi-hop delegation
 
@@ -595,7 +595,7 @@ Read inside-out: agent A delegated to agent B, which is acting on behalf of the 
 
 ### Why this isn't yet mandatory in MCP
 
-The MCP spec (2025-11-25 and draft) does **not** require Token Exchange — it's still bearer-token-on-the-wire with audience binding as the floor. Token Exchange is the pattern for production deployments that need:
+The MCP spec (2025-11-25 and draft) does **not** require Token Exchange: it's still bearer-token-on-the-wire with audience binding as the floor. Token Exchange is the pattern for production deployments that need:
 
 - Per-tool scope tightness (a calendar tool gets a calendar-only token, not a token good for mail too).
 - Auditable agent attribution (`act` claims in logs).
@@ -616,7 +616,7 @@ flowchart TB
     E[Agent-as-a-service<br/>+ delegated identity] --> E1["Agent platform (Microsoft Foundry,<br/>OpenAI Agents) holds user tokens,<br/>uses Token Exchange to mint per-MCP<br/>tokens with `act` claim."]
 ```
 
-For each, the spec compliance bar is the same — the wire-level OAuth handshake doesn't change. What changes is:
+For each, the spec compliance bar is the same: the wire-level OAuth handshake doesn't change. What changes is:
 
 - **Where the AS lives** (collocated vs separate vs corporate).
 - **Whether the agent identity is in `act`** (explicit delegation) or implicit (in the `client_id`).
@@ -634,7 +634,7 @@ Beyond [the general MCP pitfalls](07-pitfalls.md), these are agent-specific:
 3. **Letting the agent see refresh tokens.** Refresh tokens belong in the host's secure storage, not in the agent's prompt context. An agent that can see its own refresh token can leak it through a prompt-injection vulnerability.
 4. **Reusing the same OAuth client registration across hosts.** Each host (Claude Desktop, an enterprise agent runtime, a developer's CLI) should be a distinct OAuth client identity. Mixing them makes attribution impossible.
 5. **Token caching that ignores `exp`.** Agents are long-running; the temptation is to cache tokens beyond their expiry to avoid latency. Don't. Honour `exp` and refresh.
-6. **Forwarding tokens from one MCP server to another.** Token passthrough is forbidden by the spec. If MCP server A needs to call MCP server B as part of fulfilling a request, A acts as its own OAuth client to B's AS — it does *not* pass the user's token-for-A to B.
+6. **Forwarding tokens from one MCP server to another.** Token passthrough is forbidden by the spec. If MCP server A needs to call MCP server B as part of fulfilling a request, A acts as its own OAuth client to B's AS: it does *not* pass the user's token-for-A to B.
 7. **Forgetting that STDIO is opt-out.** A local stdio MCP server should not implement the OAuth flow; it should consume credentials from the environment. Mixing them produces a confusing security model.
 8. **Conflating MCP authorisation with the agent's authentication.** The OAuth flow authenticates the *user* to the AS, and authorises the *MCP client* against the *MCP server*. The agent's own identity (Entra Agent ID, SPIFFE SVID, etc.) is a separate concern that may or may not surface in tokens.
 
@@ -644,12 +644,12 @@ Beyond [the general MCP pitfalls](07-pitfalls.md), these are agent-specific:
 
 The MCP 2026-07-28 release candidate (currently in draft form) is the most substantial revision since launch. Key direction-of-travel items that affect the agent pattern:
 
-- **Tighter alignment with OIDC** — id_token semantics are appearing more prominently in agent flows.
+- **Tighter alignment with OIDC**: id_token semantics are appearing more prominently in agent flows.
 - **OpenID Connect Dynamic Client Registration 1.0** is now referenced alongside RFC 7591 for OIDC-DCR-aware ASes.
-- **Authorization Server Binding** — explicit rules that client credentials are scoped per-AS, never reused across ASes (in the draft).
-- **Refresh token guidance** is fleshed out — when to issue, when to rotate, `offline_access` opt-in for clients that genuinely need it.
+- **Authorization Server Binding**: explicit rules that client credentials are scoped per-AS, never reused across ASes (in the draft).
+- **Refresh token guidance** is fleshed out: when to issue, when to rotate, `offline_access` opt-in for clients that genuinely need it.
 - **`application_type`** at registration distinguishes native (CLI/desktop, loopback redirects) from web clients.
-- **Step-up authorization** is now first-class in the spec — clients union previously granted scopes with new challenges rather than overwriting.
+- **Step-up authorization** is now first-class in the spec: clients union previously granted scopes with new challenges rather than overwriting.
 
 And looking further:
 
@@ -662,16 +662,16 @@ And looking further:
 
 This page draws normatively from these primary sources (all verified at publication):
 
-- **MCP Authorization spec, 2025-11-25** — [modelcontextprotocol.io/specification/2025-11-25/basic/authorization](https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization)
-- **MCP Authorization spec, draft revision** — [modelcontextprotocol.io/specification/draft/basic/authorization](https://modelcontextprotocol.io/specification/draft/basic/authorization)
-- **MCP Architecture, 2025-11-25** — [modelcontextprotocol.io/specification/2025-11-25/architecture](https://modelcontextprotocol.io/specification/2025-11-25/architecture)
-- **OAuth 2.1 draft-ietf-oauth-v2-1-13** — [datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-13](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-13)
-- **RFC 9728 — Protected Resource Metadata** — [rfc-editor.org/rfc/rfc9728](https://www.rfc-editor.org/rfc/rfc9728)
-- **RFC 8707 — Resource Indicators** — [rfc-editor.org/rfc/rfc8707](https://www.rfc-editor.org/rfc/rfc8707)
-- **RFC 8414 — Authorization Server Metadata** — [rfc-editor.org/rfc/rfc8414](https://www.rfc-editor.org/rfc/rfc8414)
-- **RFC 7591 — Dynamic Client Registration** — [rfc-editor.org/rfc/rfc7591](https://www.rfc-editor.org/rfc/rfc7591)
-- **RFC 8693 — Token Exchange** — [rfc-editor.org/rfc/rfc8693](https://www.rfc-editor.org/rfc/rfc8693)
-- **draft-ietf-oauth-client-id-metadata-document-00** — [datatracker.ietf.org/doc/html/draft-ietf-oauth-client-id-metadata-document-00](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-client-id-metadata-document-00)
+- **MCP Authorization spec, 2025-11-25**: [modelcontextprotocol.io/specification/2025-11-25/basic/authorization](https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization)
+- **MCP Authorization spec, draft revision**: [modelcontextprotocol.io/specification/draft/basic/authorization](https://modelcontextprotocol.io/specification/draft/basic/authorization)
+- **MCP Architecture, 2025-11-25**: [modelcontextprotocol.io/specification/2025-11-25/architecture](https://modelcontextprotocol.io/specification/2025-11-25/architecture)
+- **OAuth 2.1 draft-ietf-oauth-v2-1-13**: [datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-13](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-13)
+- **RFC 9728, Protected Resource Metadata**, [rfc-editor.org/rfc/rfc9728](https://www.rfc-editor.org/rfc/rfc9728)
+- **RFC 8707, Resource Indicators**, [rfc-editor.org/rfc/rfc8707](https://www.rfc-editor.org/rfc/rfc8707)
+- **RFC 8414, Authorization Server Metadata**, [rfc-editor.org/rfc/rfc8414](https://www.rfc-editor.org/rfc/rfc8414)
+- **RFC 7591, Dynamic Client Registration**, [rfc-editor.org/rfc/rfc7591](https://www.rfc-editor.org/rfc/rfc7591)
+- **RFC 8693, Token Exchange**, [rfc-editor.org/rfc/rfc8693](https://www.rfc-editor.org/rfc/rfc8693)
+- **draft-ietf-oauth-client-id-metadata-document-00**: [datatracker.ietf.org/doc/html/draft-ietf-oauth-client-id-metadata-document-00](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-client-id-metadata-document-00)
 
 ---
 

@@ -37,9 +37,9 @@ flowchart TB
 
 **Symptom:** server-side validation pulls the `iss` from the token, fetches that URL's JWKS, verifies, and accepts.
 
-**Why it's wrong:** an attacker presents a token signed by their own key, with `iss` pointing to attacker-controlled JWKS. Verification passes — for the wrong key.
+**Why it's wrong:** an attacker presents a token signed by their own key, with `iss` pointing to attacker-controlled JWKS. Verification passes, for the wrong key.
 
-**Fix:** the MCP server must check `iss` against *its own* PRM-declared trusted list, not against whatever the token says. JWKS-fetching by `iss` is fine — but only *after* `iss` is on the allowlist.
+**Fix:** the MCP server must check `iss` against *its own* PRM-declared trusted list, not against whatever the token says. JWKS-fetching by `iss` is fine, but only *after* `iss` is on the allowlist.
 
 ## 4. Storing refresh tokens in plugin-accessible storage
 

@@ -37,7 +37,7 @@ Wildcard matching, allowing user-controlled hosts, or failing to compare exact-s
 
 In a multi-AS deployment, a malicious AS can trick a client into completing the flow with the wrong AS. The client thinks it's talking to AS-A but is in fact authenticating against attacker-AS-B.
 
-**Defence:** RFC 9207 — the AS includes `iss` in the authorization response, and the client verifies it before exchanging the code.
+**Defence:** RFC 9207: the AS includes `iss` in the authorization response, and the client verifies it before exchanging the code.
 
 ## Token leakage via Referer / logs / browser history
 
@@ -49,7 +49,7 @@ Why Implicit died. Why query-string tokens are forbidden in OAuth 2.1. Why URL f
 
 Without rotation, a stolen refresh token works until it expires. With rotation, the legitimate client's next refresh trips the alarm and the family is revoked.
 
-**Defence:** [refresh-token rotation](flows/refresh-token.md) for all public clients. Short-lived refresh tokens where possible.
+**Defence:** [refresh-token rotation](04-flows/refresh-token.md) for all public clients. Short-lived refresh tokens where possible.
 
 ## Scope creep
 
@@ -59,11 +59,11 @@ Without rotation, a stolen refresh token works until it expires. With rotation, 
 
 ## Confused deputy across resource servers
 
-A token issued for RS-A is accepted by RS-B because both trust the same AS and neither validates `aud`. Solved by RFC 8707 + audience validation — but the discipline to actually enforce it is uneven.
+A token issued for RS-A is accepted by RS-B because both trust the same AS and neither validates `aud`. Solved by RFC 8707 + audience validation, but the discipline to actually enforce it is uneven.
 
 The MCP profile is explicit about this; many older deployments are not.
 
-**Defence:** [resource indicators](mcp/04-resource-indicators.md) on every token, `aud` validation on every request.
+**Defence:** [resource indicators](10-mcp/04-resource-indicators.md) on every token, `aud` validation on every request.
 
 ## Open redirector chains
 
@@ -73,7 +73,7 @@ Combine a misconfigured redirect URI with an open redirector on the same host an
 
 ## MFA bypass via legacy flows
 
-If you've turned off Password grant in your AS, audit your tenants — large orgs sometimes keep it enabled for "legacy migration" indefinitely. The migration is never done.
+If you've turned off Password grant in your AS, audit your tenants: large orgs sometimes keep it enabled for "legacy migration" indefinitely. The migration is never done.
 
 **Defence:** kill switches on legacy grants at the AS level. Audit usage telemetry. Demand a sunset date for every "temporary" exception.
 
@@ -98,4 +98,4 @@ None of these alone is sufficient. Together they make a meaningful target.
 
 ---
 
-← [The Agent / MCP pattern](mcp/09-agent-pattern-end-to-end.md) · ↑ [README](../README.md) · → Next: [Further reading](12-further-reading.md)
+← [The Agent / MCP pattern](10-mcp/09-agent-pattern-end-to-end.md) · ↑ [README](../README.md) · → Next: [Further reading](12-further-reading.md)

@@ -2,9 +2,9 @@
 
 > **In one line:** A practical checklist of what a tool actually has to build in order to accept these access passes safely.
 >
-> **Why it matters:** It turns out to be surprisingly little — mostly checking passes. This page is for anyone who has to write that code.
+> **Why it matters:** It turns out to be surprisingly little: mostly checking passes. This page is for anyone who has to write that code.
 
-The MCP server's auth code is mostly **token validation** — a few hundred lines, not a few thousand. The AS does the heavy lifting (login, MFA, consent, token issuance, DCR).
+The MCP server's auth code is mostly **token validation**: a few hundred lines, not a few thousand. The AS does the heavy lifting (login, MFA, consent, token issuance, DCR).
 
 Here is the concrete minimum-bar checklist.
 
@@ -41,7 +41,7 @@ Static or near-static. Return JSON per RFC 9728 with at minimum:
 }
 ```
 
-The `resource` value is the **canonical URI** of the MCP server. It MUST match what the server expects to see in incoming tokens' `aud` claim. Pick one canonical form (with or without trailing slash, with or without a path) and stick with it — clients use exact-string matching.
+The `resource` value is the **canonical URI** of the MCP server. It MUST match what the server expects to see in incoming tokens' `aud` claim. Pick one canonical form (with or without trailing slash, with or without a path) and stick with it: clients use exact-string matching.
 
 ## 2. Validate every incoming token
 
@@ -75,7 +75,7 @@ The order matters. **Verify the signature first**, then trust the claims. Otherw
 
 ## 3. Respond with the right errors
 
-The error responses are part of the discovery chain — clients use them to drive recovery.
+The error responses are part of the discovery chain: clients use them to drive recovery.
 
 ```http
 HTTP/1.1 401 Unauthorized
@@ -91,11 +91,11 @@ WWW-Authenticate: Bearer error="insufficient_scope",
     resource_metadata="..."
 ```
 
-Putting `resource_metadata=` on every 401/403 is the recommended pattern — clients use it to re-resolve discovery if the AS or scopes have changed.
+Putting `resource_metadata=` on every 401/403 is the recommended pattern: clients use it to re-resolve discovery if the AS or scopes have changed.
 
 ## 4. Cache the AS's JWKS (but with TTL)
 
-Fetching JWKS on every request is a disaster — the AS becomes a hot dependency. Fetch once, cache, refetch on TTL or on signature-verification failure with an unknown `kid`. Typical TTL: 5–60 minutes.
+Fetching JWKS on every request is a disaster: the AS becomes a hot dependency. Fetch once, cache, refetch on TTL or on signature-verification failure with an unknown `kid`. Typical TTL: 5–60 minutes.
 
 ```mermaid
 sequenceDiagram
@@ -119,17 +119,17 @@ sequenceDiagram
 
 A user revoking access at the AS console expects it to stop working within the token's expiry window. Don't extend that window by caching "token is valid" results.
 
-If you need *immediate* revocation, use [token introspection](../05-tokens.md#token-introspection-rfc-7662) instead of JWT validation — at the cost of an AS round-trip per request, mitigated by short-TTL introspection caching.
+If you need *immediate* revocation, use [token introspection](../05-tokens.md#token-introspection-rfc-7662) instead of JWT validation: at the cost of an AS round-trip per request, mitigated by short-TTL introspection caching.
 
 ## What you do NOT need to implement
 
-- **`/authorize`** — not on the MCP server. Lives on the AS.
-- **`/token`** — same.
-- **`/register`** — same.
-- **`/jwks`** — same.
-- **User account database** — the MCP server should treat `sub` as opaque and store any per-user state keyed by `(iss, sub)`.
-- **Session cookies** — bearer tokens are the only credential.
-- **Password handling, MFA, consent screens** — all the AS's job.
+- **`/authorize`**, not on the MCP server. Lives on the AS.
+- **`/token`**: same.
+- **`/register`**: same.
+- **`/jwks`**: same.
+- **User account database**: the MCP server should treat `sub` as opaque and store any per-user state keyed by `(iss, sub)`.
+- **Session cookies**: bearer tokens are the only credential.
+- **Password handling, MFA, consent screens**: all the AS's job.
 
 That's the win of the role split. Your MCP server's auth surface is just token validation.
 
