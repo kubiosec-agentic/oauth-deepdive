@@ -46,7 +46,7 @@ Strongest, but requires mTLS infrastructure end-to-end (load balancers, service 
 
 ### DPoP — RFC 9449
 
-DPoP ("Demonstrating Proof-of-Possession") is the lightweight alternative. The client signs a small JWT per request with a JWK it bound to the token at issuance.
+DPoP ("Demonstrating Proof-of-Possession") is the lightweight alternative. On each request the client signs a small **JWT** — a *JSON Web Token*, a short signed JSON document (covered in full in the next section) — using a key pair it generated itself. The public half of that key, called a **JWK** (*JSON Web Key*), is tied to the access token when the token is issued. The resource server can then check that every request was signed by the matching private key, which only the legitimate client holds. A stolen token without that private key is useless.
 
 ```mermaid
 sequenceDiagram
@@ -90,7 +90,7 @@ Stating the obvious: an opaque access token is just a string; a JWT access token
 
 JWT access tokens let the RS validate the token without a round-trip to the AS — at the cost of any revocation being delayed to token expiry. Pick short lifetimes (5–15 min) and lean on the `jti` + a deny-list if you need immediate revocation.
 
-**JWT access tokens are not ID tokens.** Some implementations conflate them. The header should say `typ: "at+jwt"` to signal "this is an access token, not an id_token" — a tiny but load-bearing detail.
+**JWT access tokens are not ID tokens.** Some implementations conflate them. Every JWT begins with a small *header* — a few fields describing the token itself, separate from the claims shown above — and one of those fields, `typ` (type), should be set to `at+jwt`. That value signals "this is an access token, not an id_token." It's a tiny but load-bearing detail: a server that skips this check can be tricked into accepting an ID token (meant only for the app) where an access token was expected.
 
 ## Token introspection (RFC 7662)
 
